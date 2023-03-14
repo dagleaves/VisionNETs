@@ -8,6 +8,7 @@ import torch
 import os
 
 
+# Load model from args
 def get_model_from_args(args):
     model_arg = args.model.lower()
     if model_arg == 'MLP':
@@ -16,6 +17,7 @@ def get_model_from_args(args):
         raise NotImplemented('Model choice does not match an implemented option')
 
 
+# Load optimizer from args
 def get_optimizer_from_args(args, model):
     optim_arg = args.optim.lower()
     if optim_arg == 'sgd':
@@ -28,7 +30,7 @@ def get_optimizer_from_args(args, model):
         raise NotImplemented('Optimizer does not match an implemented option')
 
 
-
+# Load dataset from args
 def get_datasets_from_args(args):
     dataset = args.dataset.lower()
     if dataset == 'mnist':
@@ -50,6 +52,7 @@ def get_datasets_from_args(args):
         raise NotImplemented('Dataset does not match an implemented option')
 
 
+# Split training dataset into train/val split
 def get_train_val_split(args, train_dataset):
     val_split = int(len(train_dataset) * args.val_pc)
     train_sampler = SubsetRandomSampler(list(range(val_split)))
@@ -63,6 +66,7 @@ def get_train_val_split(args, train_dataset):
     return train_loader, val_loader
 
 
+# Reproducibility seeds
 def seed_everything(args):
     seed = args.seed
     random.seed(seed)
