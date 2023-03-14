@@ -4,14 +4,14 @@ import torch.nn.functional as F
 
 class MLP(nn.Module):
 
-    def __init__(self, in_features=28**2, hidden_features=100, n_hidden=1, out_features=10):
-        '''
+    def __init__(self, in_features: int = 28**2, hidden_features: int = 100, n_hidden: int = 1, out_features: int = 10):
+        """
         Initialize a basic multi-layer perceptron (MLP)
         :param in_features: number of input features. Default 784 for MNIST 28x28 images
         :param hidden_features: size (width) of hidden layer(s). Default 100
         :param n_hidden: number of hidden layers to use. Default 1
         :param out_features: number of classes. Default 10 MNIST
-        '''
+        """
         super(MLP, self).__init__()
         self.inp_lin = nn.Linear(in_features, hidden_features, bias=False)
         self.hidden = nn.ModuleList([nn.Linear(hidden_features, hidden_features, bias=False) for _ in range(n_hidden)])

@@ -1,29 +1,53 @@
+from utils.arg_utils import get_model_from_args, get_optimizer_from_args, seed_everything
+from tqdm import tqdm
 import argparse
+import torch
 
 
 def train():
     pass
 
 
-def main(args):
-    pass
+def main():
+    seed_everything(args)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    model = get_model_from_args(args).to(device)
+    optimizer = get_optimizer_from_args(args, model)
+    criterion = torch.nn.CrossEntropyLoss()
+
+    for epoch in tqdm(range(args.n_epochs), desc="Training"):
+        pass
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train MNIST on a image classification model')
+    # Config parameters
     parser.add_argument('--model', type=str, default='MLP', metavar='M',
-                        help='name of model to use')
+                        choices=['MLP', 'AlexNet', 'VGG16', 'ResNet', 'GoogLeNet'],
+                        help='which model to use')
+    parser.add_argument('--optim', type=str, default='SGD', metavar='O',
+                        choices=['SGD', 'Adam', 'AdamW'],
+                        help='which optimizer to use')
+    # Data parameters
+    parser.add_argument('--dataset', type=str, default='MNIST', metavar='D',
+                        choices=['MNIST'],
+                        help='which dataset to use')
+    parser.add_argument('--dir', type=str, default='data', metavar='D',
+                        help='root data directory')
     parser.add_argument('--batch_size_train', type=int, default=10, metavar='N',
                         help='input batch size for training (default: 10)')
     parser.add_argument('--batch_size_test', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 64)')
     parser.add_argument('--n_epochs', type=int, default=5, metavar='N',
                         help='number of training epochs (default: 5)')
-    parser.add_argument('--valid', default=0.1, type=float,
+    parser.add_argument('--val_pc', default=0.1, type=float,
                         help='fraction of training data used for validation')
     # Optimizer parameters
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
+    parser.add_argument('--momentum', type=float, default=0.9, metavar='N',
+                        help='momentum (default: 0.9)')
     # Architecture
     parser.add_argument('--n_hidden', type=int, default=100, metavar='NH',
                         help='number of hidden layers in MLP (default: 100)')
@@ -38,4 +62,4 @@ if __name__ == '__main__':
     for arg in vars(args):
         print('\t' + arg + ':', getattr(args, arg))
     print('=' * 100)
-    main(args)
+    main()
