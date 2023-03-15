@@ -77,10 +77,14 @@ def get_train_val_split(args, dataset):
     val_sampler = SubsetRandomSampler(list(range(val_split, len(dataset))))
     train_loader = torch.utils.data.DataLoader(dataset,
                                                batch_size=args.batch_size_train,
-                                               sampler=train_sampler)
+                                               sampler=train_sampler,
+                                               num_workers=args.workers,
+                                               shuffle=True)
     val_loader = torch.utils.data.DataLoader(dataset,
                                              batch_size=args.batch_size_test,
-                                             sampler=val_sampler)
+                                             sampler=val_sampler,
+                                             num_workers=args.workers,
+                                             shuffle=True)
     return train_loader, val_loader
 
 
