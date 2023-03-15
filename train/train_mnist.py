@@ -66,7 +66,7 @@ def main():
     # Load data
     train_data, test_data = utils.get_datasets_from_args(args)
     train_loader, val_loader = utils.get_train_val_split(args, train_data)
-    test_loader = torch.utils.data.DataLoader(dataset,
+    test_loader = torch.utils.data.DataLoader(test_data,
                                               batch_size=args.batch_size_test,
                                               num_workers=args.workers,
                                               shuffle=True)
