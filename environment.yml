@@ -1,0 +1,11 @@
+name: vision
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - torchaudio
+  - torchvision
+  - pytorch
+  - pytorch-cuda=11.6
+  - tqdm
+prefix: /home/dgleaves/anaconda3/envs/vision
