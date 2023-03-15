@@ -8,8 +8,12 @@ import torch
 import os
 
 
-# Load model from args
 def get_model_from_args(args):
+    """
+    Load model from specified arg
+    :param args: args with args.model specifiying model to use
+    :return: model object: torch.nn.Module
+    """
     model_arg = args.model.lower()
     if model_arg == 'MLP':
         return MLP()
@@ -17,8 +21,13 @@ def get_model_from_args(args):
         raise NotImplemented('Model choice does not match an implemented option')
 
 
-# Load optimizer from args
 def get_optimizer_from_args(args, model):
+    """
+    Load optimizer from args for given model parameters
+    :param args: args with optimizer name
+    :param model: torch.nn.Module with parameters to optimize
+    :return: pytorch optimizer
+    """
     optim_arg = args.optim.lower()
     if optim_arg == 'sgd':
         return SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
@@ -30,8 +39,12 @@ def get_optimizer_from_args(args, model):
         raise NotImplemented('Optimizer does not match an implemented option')
 
 
-# Load dataset from args
 def get_datasets_from_args(args):
+    """
+    Load dataset from args for given dataset name
+    :param args: args with dataset name
+    :return: [train, test] datasets
+    """
     dataset = args.dataset.lower()
     if dataset == 'mnist':
         mean = (0.1307,)    # magic MNIST mean
@@ -52,22 +65,31 @@ def get_datasets_from_args(args):
         raise NotImplemented('Dataset does not match an implemented option')
 
 
-# Split training dataset into train/val split
-def get_train_val_split(args, train_dataset):
-    val_split = int(len(train_dataset) * args.val_pc)
+def get_train_val_split(args, dataset):
+    """
+    Split dataset into train and val splits, according to provided arg percent
+    :param args: args with validation split percentage
+    :param dataset: dataset to split
+    :return: [train, validation] dataloaders
+    """
+    val_split = int(len(dataset) * args.val_pc)
     train_sampler = SubsetRandomSampler(list(range(val_split)))
-    val_sampler = SubsetRandomSampler(list(range(val_split, len(train_dataset))))
-    train_loader = torch.utils.data.DataLoader(train_dataset,
+    val_sampler = SubsetRandomSampler(list(range(val_split, len(dataset))))
+    train_loader = torch.utils.data.DataLoader(dataset,
                                                batch_size=args.batch_size_train,
                                                sampler=train_sampler)
-    val_loader = torch.utils.data.DataLoader(train_dataset,
+    val_loader = torch.utils.data.DataLoader(dataset,
                                              batch_size=args.batch_size_test,
                                              sampler=val_sampler)
     return train_loader, val_loader
 
 
-# Reproducibility seeds
 def seed_everything(args):
+    """
+    Set seeds for reproducibility
+    :param args: args with specified seed
+    :return: None
+    """
     seed = args.seed
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
