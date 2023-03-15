@@ -1,26 +1,58 @@
 import utils.arg_utils as utils
+from utils.metric_utils import AverageMeter, calc_metrics
 from tqdm import tqdm, trange
 import argparse
 import torch
 
 
-def get_accuracy(output, target, size):
-    classification = torch.argmax(output, dim=1)
-    correct = (classification == target).sum().item()
-    return 0
-
-
 def train(model, optimizer, criterion, train_loader, device):
+    train_accuracy = AverageMeter()
+    train_loss = AverageMeter()
     model.train()
+
     pbar = tqdm(train_loader)
     for data, target in pbar:
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
+
+        # Update model parameters
         output = model(data)
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
-        acc = get_accuracy(output, target, target.size(0))
+
+        # Update metrics
+        metrics = calc_metrics(output, target)
+        train_accuracy.update(metrics['accuracy'], target.size(0))
+        train_loss.update(loss.item(), target.size())
+        pbar.set_postfix({
+            'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=train_loss),
+            'acc': '{acc.val:.3f} ({acc.avg}:.3f)'.format(acc=train_accuracy)
+        })
+
+
+def test(model, criterion, data_loader, device):
+    test_accuracy = AverageMeter()
+    test_loss = AverageMeter()
+    model.eval()
+
+    with torch.no_grad():
+        pbar = tqdm(data_loader)
+        for data, target in pbar:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            loss = criterion(output, target)
+
+            # Update metrics
+            metrics = calc_metrics(output, target)
+            test_accuracy.update(metrics['accuracy'], target.size(0))
+            test_loss.update(loss.item(), target.size())
+            pbar.set_postfix({
+                'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=test_loss),
+                'acc': '{acc.val:.3f} ({acc.avg}:.3f)'.format(acc=test_accuracy)
+            })
+
+    return test_loss.avg, test_accuracy.avg
 
 
 def main():
@@ -34,9 +66,25 @@ def main():
     # Load data
     train_data, test_data = utils.get_datasets_from_args(args)
     train_loader, val_loader = utils.get_train_val_split(args, train_data)
+    test_loader = torch.utils.data.DataLoader(dataset,
+                                              batch_size=args.batch_size_test,
+                                              num_workers=args.workers,
+                                              shuffle=True)
 
-    for epoch in trange(args.n_epochs, desc='Training', unit='epoch'):
+    # Train model
+    pbar = trange(args.n_epochs, desc='Training', unit='epoch')
+    for _ in pbar:
         train(model, optimizer, criterion, train_loader, device)
+        val_loss, val_acc = test(model, criterion, val_loader, device)
+        pbar.set_postfix({
+            'loss': val_loss,
+            'acc': val_acc
+        })
+
+    # Test model on test set
+    test_loss, test_acc = test(model, criterion, test_loader, device)
+    print('Test Loss:', test_loss)
+    print('Test Accuracy', test_acc)
 
 
 if __name__ == '__main__':
