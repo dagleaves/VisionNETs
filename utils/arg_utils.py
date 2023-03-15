@@ -51,12 +51,12 @@ def get_datasets_from_args(args):
         std = (0.3081,)     # magic MNIST std
         tfs = transforms.Compose([transforms.ToTensor(),
                                   transforms.Normalize(mean, std)])
-        train_data = datasets.MNIST(args.dir,
+        train_data = datasets.MNIST(args.data_dir,
                                     train=True,
                                     download=True,
                                     transform=tfs
                                     )
-        test_data = datasets.MNIST(args.dir,
+        test_data = datasets.MNIST(args.data_dir,
                                    train=False,
                                    download=True,
                                    transform=tfs)

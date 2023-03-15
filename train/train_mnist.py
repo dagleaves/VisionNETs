@@ -1,5 +1,5 @@
 import utils.arg_utils as utils
-from utils.metric_utils import AverageMeter, calc_metrics
+from utils.metric_utils import AverageMeter, calc_metrics, BestCheckpointSaver, save_checkpoint
 from tqdm import tqdm, trange
 import argparse
 import torch
@@ -62,6 +62,7 @@ def main():
     model = utils.get_model_from_args(args).to(device)
     optimizer = utils.get_optimizer_from_args(args, model)
     criterion = torch.nn.CrossEntropyLoss()
+    save_best_checkpoint = BestCheckpointSaver()
 
     # Load data
     train_data, test_data = utils.get_datasets_from_args(args)
@@ -73,13 +74,17 @@ def main():
 
     # Train model
     pbar = trange(args.n_epochs, desc='Training', unit='epoch')
-    for _ in pbar:
+    for epoch in pbar:
         train(model, optimizer, criterion, train_loader, device)
         val_loss, val_acc = test(model, criterion, val_loader, device)
+        save_best_checkpoint(val_loss, model, criterion, optimizer, epoch, args)
         pbar.set_postfix({
             'loss': val_loss,
             'acc': val_acc
         })
+
+    # Save final model
+    save_checkpoint(model, optimizer, criterion, epoch, args)
 
     # Test model on test set
     test_loss, test_acc = test(model, criterion, test_loader, device)
@@ -96,11 +101,13 @@ if __name__ == '__main__':
     parser.add_argument('--optim', type=str, default='SGD', metavar='O',
                         choices=['SGD', 'Adam', 'AdamW'],
                         help='which optimizer to use')
+    parser.add_argument('--ckpt_dir', type=str, default='checkpoints', metavar='C',
+                        help='saved model checkpoints directory')
     # Data parameters
     parser.add_argument('--dataset', type=str, default='MNIST', metavar='D',
                         choices=['MNIST'],
                         help='which dataset to use')
-    parser.add_argument('--dir', type=str, default='data', metavar='D',
+    parser.add_argument('--data_dir', type=str, default='data', metavar='D',
                         help='root data directory')
     parser.add_argument('--batch_size_train', type=int, default=10, metavar='N',
                         help='input batch size for training (default: 10)')
