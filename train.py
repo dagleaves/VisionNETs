@@ -1,11 +1,3 @@
-import sys
-import os
-
-# Unfortunate project structure import shenanigans
-current = os.path.dirname(os.path.realpath(__file__))
-parent = os.path.dirname(current)
-sys.path.append(parent)
-
 import utils as arg_utils
 from utils import AverageMeter, calc_metrics, BestCheckpointSaver, save_checkpoint
 from tqdm import tqdm, trange

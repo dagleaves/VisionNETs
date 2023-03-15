@@ -1,2 +1,2 @@
 #!/bin/sh
-python train/train_mnist.py --model MLP --dataset MNIST
+python train.py --model MLP --dataset MNIST
