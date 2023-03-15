@@ -1,7 +1,7 @@
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
 from torch.optim import SGD, Adam, AdamW
-from models.MLP import MLP
+from models import MLP
 import numpy as np
 import random
 import torch
@@ -15,10 +15,10 @@ def get_model_from_args(args):
     :return: model object: torch.nn.Module
     """
     model_arg = args.model.lower()
-    if model_arg == 'MLP':
+    if model_arg == 'mlp':
         return MLP()
     else:
-        raise NotImplemented('Model choice does not match an implemented option')
+        raise NotImplemented(f'Model {args.model} does not match an implemented option')
 
 
 def get_optimizer_from_args(args, model):
@@ -50,7 +50,8 @@ def get_datasets_from_args(args):
         mean = (0.1307,)    # magic MNIST mean
         std = (0.3081,)     # magic MNIST std
         tfs = transforms.Compose([transforms.ToTensor(),
-                                  transforms.Normalize(mean, std)])
+                                  transforms.Normalize(mean, std),
+                                  transforms.Lambda(lambda x: torch.flatten(x))])
         train_data = datasets.MNIST(args.data_dir,
                                     train=True,
                                     download=True,
@@ -73,18 +74,18 @@ def get_train_val_split(args, dataset):
     :return: [train, validation] dataloaders
     """
     val_split = int(len(dataset) * args.val_pc)
-    train_sampler = SubsetRandomSampler(list(range(val_split)))
-    val_sampler = SubsetRandomSampler(list(range(val_split, len(dataset))))
+    val_sampler = SubsetRandomSampler(list(range(val_split)))
+    train_sampler = SubsetRandomSampler(list(range(val_split, len(dataset))))
     train_loader = torch.utils.data.DataLoader(dataset,
                                                batch_size=args.batch_size_train,
                                                sampler=train_sampler,
                                                num_workers=args.workers,
-                                               shuffle=True)
+                                               )
     val_loader = torch.utils.data.DataLoader(dataset,
                                              batch_size=args.batch_size_test,
                                              sampler=val_sampler,
-                                             num_workers=args.workers,
-                                             shuffle=True)
+                                             num_workers=args.workers
+                                             )
     return train_loader, val_loader
 
 

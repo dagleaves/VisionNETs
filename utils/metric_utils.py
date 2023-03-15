@@ -47,7 +47,7 @@ class BestCheckpointSaver:
     def __call__(self, current_loss, model, optimizer, criterion, epoch, args):
         if current_loss < self.best_loss:
             self.best_loss = current_loss
-            save_checkpoint(model, optimizer, criterion, epoch, args)
+            save_checkpoint(model, optimizer, criterion, epoch, args, best=True)
 
 
 class AverageMeter:
