@@ -1,7 +1,7 @@
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
 from torch.optim import SGD, Adam, AdamW
-from models import MLP
+from models import MLP, LeNet5
 import numpy as np
 import random
 import torch
@@ -17,6 +17,8 @@ def get_model_from_args(args):
     model_arg = args.model.lower()
     if model_arg == 'mlp':
         return MLP()
+    elif model_arg == 'lenet5':
+        return LeNet5()
     else:
         raise NotImplemented(f'Model {args.model} does not match an implemented option')
 
@@ -47,11 +49,17 @@ def get_datasets_from_args(args):
     """
     dataset = args.dataset.lower()
     if dataset == 'mnist':
+        # Define transforms
         mean = (0.1307,)    # magic MNIST mean
         std = (0.3081,)     # magic MNIST std
-        tfs = transforms.Compose([transforms.ToTensor(),
-                                  transforms.Normalize(mean, std),
-                                  transforms.Lambda(lambda x: torch.flatten(x))])
+        tfs = [transforms.ToTensor(),
+               transforms.Normalize(mean, std),
+               ]
+        if args.model.lower() == 'mpl':
+            tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
+        tfs = transforms.Compose(tfs)
+
+        # Load datasets
         train_data = datasets.MNIST(args.data_dir,
                                     train=True,
                                     download=True,
