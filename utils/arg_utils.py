@@ -55,7 +55,7 @@ def get_datasets_from_args(args):
         tfs = [transforms.ToTensor(),
                transforms.Normalize(mean, std),
                ]
-        if args.model.lower() == 'mpl':
+        if args.model.lower() == 'mlp':
             tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
         tfs = transforms.Compose(tfs)
 
