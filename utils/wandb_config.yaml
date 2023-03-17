@@ -1,0 +1,18 @@
+program: train.py
+method: random
+metric:
+  goal: maximize
+  name: val_acc
+parameters:
+  learning_rate:
+    min: 0.0001
+    max: 0.1
+  optimizer:
+    values: ["SGD"]
+  batch_size:
+    values: [10, 32, 64]
+  epochs:
+    values: [1, 2, 5]
+  
+    
+  

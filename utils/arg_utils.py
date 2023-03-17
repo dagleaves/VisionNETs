@@ -1,10 +1,13 @@
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
 from torch.optim import SGD, Adam, AdamW
+from pathlib import Path
 from models import MLP, LeNet5
 import numpy as np
 import random
 import torch
+import wandb
+import yaml
 import os
 
 
@@ -109,3 +112,64 @@ def seed_everything(args):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
+
+
+def setup_sweep(args):
+    """
+    Setup WandB hyperparameter sweep
+    :param args: dict to assign hyperparameters to
+    :return: sweep_id
+    """
+    if not args.sweep:
+        return None
+    assert args.wandb, 'In order to sweep, wandb must be enabled'
+
+    # Load sweep config
+    source_dir = Path(__file__).resolve().parent
+    with open(source_dir / 'wandb_config.yaml', 'r') as config_file:
+        sweep_config = yaml.safe_load(config_file)
+
+    sweep_id = wandb.sweep(sweep_config, project='VisionNETs-sweep')
+    return sweep_id
+
+
+def get_sweep_args(args):
+    """
+    Get wandb sweep config params
+    :param args: current args
+    :return: updated args
+    """
+    if not args.wandb or not args.sweep:
+        return args
+    # Set hyperparameters from config
+    args.lr = wandb.config.learning_rate
+    args.batch_size_train = wandb.config.batch_size
+    args.n_epochs = wandb.config.epochs
+    args.optim = wandb.config.optimizer
+    return args
+
+
+def init_wandb(args):
+    """
+    Initizalize wandb run according to args
+    :param args: if wandb enabled and if sweep
+    :return: None
+    """
+    if not args.wandb:
+        return
+    if args.sweep:
+        wandb.init()
+    else:
+        wandb.init(project='VisionNETs')
+
+
+def wandb_log(args, log):
+    """
+    Log metrics to wandb
+    :param args: if wandb is used
+    :param log: metrics to log
+    :return: None
+    """
+    if not args.wandb:
+        return
+    wandb.log(log)
