@@ -3,6 +3,7 @@ from utils import AverageMeter, calc_metrics, BestCheckpointSaver, save_checkpoi
 from tqdm import tqdm, trange
 import argparse
 import torch
+import wandb
 
 
 def train(model, optimizer, criterion, train_loader, device, epoch):
@@ -29,15 +30,20 @@ def train(model, optimizer, criterion, train_loader, device, epoch):
             'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=train_loss),
             'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=train_accuracy)
         })
+        arg_utils.wandb_log(args, {
+            'epoch': epoch + 1,
+            'train_loss': train_loss.avg,
+            'train_acc': train_accuracy.avg
+        })
 
 
-def test(model, criterion, data_loader, device):
+def test(model, criterion, data_loader, device, testing=False):
     test_accuracy = AverageMeter()
     test_loss = AverageMeter()
     model.eval()
 
     with torch.no_grad():
-        pbar = tqdm(data_loader, desc='Validation', unit='batch', leave=True)
+        pbar = tqdm(data_loader, desc='Validation' if not testing else 'Testing', unit='batch', leave=True)
         for data, target in pbar:
             data, target = data.to(device), target.to(device)
             output = model(data)
@@ -51,14 +57,23 @@ def test(model, criterion, data_loader, device):
                 'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=test_loss),
                 'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=test_accuracy)
             })
+            arg_utils.wandb_log(args, {
+                'val_loss': test_loss.avg,
+                'val_acc': test_accuracy.avg
+            })
 
     return test_loss.avg, test_accuracy.avg
 
 
 def main():
+    global args
+    arg_utils.init_wandb(args)
     arg_utils.seed_everything(args)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('Using device:', device)
+
+    # Get updated sweep args if enabled
+    args = arg_utils.get_sweep_args(args)
 
     model = arg_utils.get_model_from_args(args).to(device)
     optimizer = arg_utils.get_optimizer_from_args(args, model)
@@ -79,6 +94,8 @@ def main():
         train(model, optimizer, criterion, train_loader, device, epoch)
         val_loss, val_acc = test(model, criterion, val_loader, device)
         save_best_checkpoint(val_loss, model, criterion, optimizer, epoch, args)
+
+        # Logging
         pbar.set_postfix({
             'loss': val_loss,
             'acc': val_acc
@@ -88,7 +105,7 @@ def main():
     save_checkpoint(model, optimizer, criterion, epoch, args)
 
     # Test model on test set
-    test_loss, test_acc = test(model, criterion, test_loader, device)
+    test_loss, test_acc = test(model, criterion, test_loader, device, testing=True)
     print('Test Loss:', '%.3f' % test_loss)
     print('Test Accuracy', test_acc)
 
@@ -110,8 +127,8 @@ if __name__ == '__main__':
                         help='which dataset to use')
     parser.add_argument('--data_dir', type=str, default='data', metavar='D',
                         help='root data directory')
-    parser.add_argument('--batch_size_train', type=int, default=10, metavar='N',
-                        help='input batch size for training (default: 10)')
+    parser.add_argument('--batch_size_train', type=int, default=32, metavar='N',
+                        help='input batch size for training (default: 32)')
     parser.add_argument('--batch_size_test', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 64)')
     parser.add_argument('--n_epochs', type=int, default=2, metavar='N',
@@ -125,18 +142,29 @@ if __name__ == '__main__':
                         help='learning rate (default: 0.01)')
     parser.add_argument('--momentum', type=float, default=0.9, metavar='N',
                         help='momentum (default: 0.9)')
-    # Architecture
-    parser.add_argument('--n_hidden', type=int, default=100, metavar='NH',
-                        help='number of hidden layers in MLP (default: 100)')
-    parser.add_argument('--n_outputs', type=int, default=10, metavar='NO',
-                        help='number of output units in MLP (default: 10)')
+    # Miscellaneous
     parser.add_argument('--seed', type=int, default=2, metavar='S',
                         help='random seed (default: 2)')
+    parser.add_argument('--wandb', action='store_true',
+                        help='use wandb (default: false)')
+    parser.add_argument('--sweep', action='store_true',
+                        help='use WandB hyperparameter sweep (default: false)')
 
+    # Load args
     args = parser.parse_args()
+    if args.sweep and not args.wandb:
+        parser.error('--sweep requires --wandb')    # ensure wandb enabled for sweep
+
+    # Print args
     print('=' * 100)
     print('Arguments =')
     for arg in vars(args):
         print('\t' + arg + ':', getattr(args, arg))
     print('=' * 100)
-    main()
+
+    # Train model
+    sweep_id = arg_utils.setup_sweep(args)
+    if sweep_id is not None:
+        wandb.agent(sweep_id, function=main, count=10)
+    else:
+        main()
