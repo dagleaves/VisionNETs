@@ -23,3 +23,13 @@ class MLP(nn.Module):
             x = F.relu(hidden(x))
         x = self.out_fc(x)
         return x
+
+    @classmethod
+    def from_args(cls, args):
+        dataset = args.dataset.lower()
+        if dataset == 'mnist':
+            return MLP()
+        elif dataset == 'cifar10':
+            return MLP(in_features=3*32*32, hidden_features=128)
+        else:
+            raise NotImplementedError
