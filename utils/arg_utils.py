@@ -19,11 +19,11 @@ def get_model_from_args(args):
     """
     model_arg = args.model.lower()
     if model_arg == 'mlp':
-        return MLP()
+        return MLP.from_args(args)
     elif model_arg == 'lenet5':
         return LeNet5()
     else:
-        raise NotImplemented(f'Model {args.model} does not match an implemented option')
+        raise NotImplementedError(f'Model {args.model} does not match an implemented option')
 
 
 def get_optimizer_from_args(args, model):
@@ -41,7 +41,7 @@ def get_optimizer_from_args(args, model):
     elif optim_arg == 'adamw':
         return AdamW(model.parameters(), lr=args.lr)
     else:
-        raise NotImplemented('Optimizer does not match an implemented option')
+        raise NotImplementedError('Optimizer does not match an implemented option')
 
 
 def get_datasets_from_args(args):
@@ -73,8 +73,30 @@ def get_datasets_from_args(args):
                                    download=True,
                                    transform=tfs)
         return train_data, test_data
+    elif dataset == 'cifar10':
+        # Define transforms
+        mean = (0.4914, 0.4822, 0.4465,)    # magic MNIST mean
+        std = (0.2470, 0.2435, 0.2616,)     # magic MNIST std
+        tfs = [transforms.ToTensor(),
+               transforms.Normalize(mean, std),
+               ]
+        if args.model.lower() == 'mlp':
+            tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
+        tfs = transforms.Compose(tfs)
+
+        # Load datasets
+        train_data = datasets.CIFAR10(args.data_dir,
+                                      train=True,
+                                      download=True,
+                                      transform=tfs
+                                      )
+        test_data = datasets.CIFAR10(args.data_dir,
+                                     train=False,
+                                     download=True,
+                                     transform=tfs)
+        return train_data, test_data
     else:
-        raise NotImplemented('Dataset does not match an implemented option')
+        raise NotImplementedError('Dataset does not match an implemented option')
 
 
 def get_train_val_split(args, dataset):
