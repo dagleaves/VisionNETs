@@ -32,4 +32,4 @@ class MLP(nn.Module):
         elif dataset == 'cifar10':
             return MLP(in_features=3*32*32, hidden_features=128)
         else:
-            raise NotImplementedError
+            raise NotImplementedError('MLP not implemented for ' + args.dataset + ' dataset')

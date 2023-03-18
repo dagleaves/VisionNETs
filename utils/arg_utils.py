@@ -21,9 +21,9 @@ def get_model_from_args(args):
     if model_arg == 'mlp':
         return MLP.from_args(args)
     elif model_arg == 'lenet5':
-        return LeNet5()
+        return LeNet5.from_args(args)
     else:
-        raise NotImplementedError(f'Model {args.model} does not match an implemented option')
+        raise NotImplementedError(f'Model {args.model} is not implemented')
 
 
 def get_optimizer_from_args(args, model):
@@ -41,7 +41,7 @@ def get_optimizer_from_args(args, model):
     elif optim_arg == 'adamw':
         return AdamW(model.parameters(), lr=args.lr)
     else:
-        raise NotImplementedError('Optimizer does not match an implemented option')
+        raise NotImplementedError(f'Optimizer {args.optim} is not implemented')
 
 
 def get_datasets_from_args(args):
@@ -96,7 +96,7 @@ def get_datasets_from_args(args):
                                      transform=tfs)
         return train_data, test_data
     else:
-        raise NotImplementedError('Dataset does not match an implemented option')
+        raise NotImplementedError(f'Dataset {args.dataset} in not implemented')
 
 
 def get_train_val_split(args, dataset):
