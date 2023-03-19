@@ -7,7 +7,6 @@ class LeNet5(nn.Module):
     Implementation of the LeNet5 architecture
         - Relu activation
         - MaxPool subsampling
-        - Relu activation
     """
     def __init__(self, in_channels: int, out_features: int):
         super(LeNet5, self).__init__()

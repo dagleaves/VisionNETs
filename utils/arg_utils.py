@@ -2,7 +2,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
 from torch.optim import SGD, Adam, AdamW
 from pathlib import Path
-from models import MLP, LeNet5
+from models import MLP, LeNet5, AlexNet
 import numpy as np
 import random
 import torch
@@ -22,6 +22,8 @@ def get_model_from_args(args):
         return MLP.from_args(args)
     elif model_arg == 'lenet5':
         return LeNet5.from_args(args)
+    elif model_arg == 'alexnet':
+        return AlexNet.from_args(args)
     else:
         raise NotImplementedError(f'Model {args.model} is not implemented')
 
@@ -44,6 +46,66 @@ def get_optimizer_from_args(args, model):
         raise NotImplementedError(f'Optimizer {args.optim} is not implemented')
 
 
+def get_dataset_mean_std(dataset):
+    """
+    Get the mean and std of a dataset for normalization
+    :param dataset: dataset name
+    :return: mean, std
+    """
+    if dataset == 'mnist':
+        mean = (0.1307,)
+        std = (0.3081,)
+    elif dataset == 'cifar10':
+        mean = (0.4914, 0.4822, 0.4465)
+        std = (0.2470, 0.2435, 0.2616)
+    elif dataset == 'cifar100':
+        mean = (0.5071, 0.4865, 0.4409)
+        std = (0.2673, 0.2564, 0.2762)
+    else:
+        raise NotImplementedError('Mean and std not available for ' + dataset + ' dataset')
+    return mean, std
+
+
+def get_resize_transforms(dataset, model):
+    # Non-imagenet dataset
+    if dataset != 'imagenet':
+        if model in ['mlp', 'lenet5']:  # No resizing necessary
+            return []
+        else:   # upscale to 64x64
+            return [
+                transforms.Resize((70, 70)),
+                transforms.CenterCrop((64, 64))
+            ]
+    if model in ['mlp', 'lenet5']:
+        raise NotImplementedError('Can ImageNet be used for MLP or LeNet5? # TODO')
+    else:   # Standard ImageNet size
+        return [
+            transforms.Resize((227, 227)),
+            transforms.CenterCrop((224, 224))
+        ]
+
+
+def get_transforms_from_args(args):
+    """
+    Get dataset transforms from args
+    :param args: dataset and model selection
+    :return: torchvision.transforms.Compose
+    """
+    dataset = args.dataset.lower()
+    model = args.model.lower()
+    mean, std = get_dataset_mean_std(dataset)
+
+    # Compose transforms
+    tfs = get_resize_transforms(dataset, model)
+    tfs += [
+        transforms.ToTensor(),
+        transforms.Normalize(mean, std),
+    ]
+    if model == 'mlp':
+        tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
+    return transforms.Compose(tfs)
+
+
 def get_datasets_from_args(args):
     """
     Load dataset from args for given dataset name
@@ -51,17 +113,8 @@ def get_datasets_from_args(args):
     :return: [train, test] datasets
     """
     dataset = args.dataset.lower()
+    tfs = get_transforms_from_args(args)
     if dataset == 'mnist':
-        # Define transforms
-        mean = (0.1307,)    # magic MNIST mean
-        std = (0.3081,)     # magic MNIST std
-        tfs = [transforms.ToTensor(),
-               transforms.Normalize(mean, std),
-               ]
-        if args.model.lower() == 'mlp':
-            tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
-        tfs = transforms.Compose(tfs)
-
         # Load datasets
         train_data = datasets.MNIST(args.data_dir,
                                     train=True,
@@ -74,16 +127,6 @@ def get_datasets_from_args(args):
                                    transform=tfs)
         return train_data, test_data
     elif dataset == 'cifar10':
-        # Define transforms
-        mean = (0.4914, 0.4822, 0.4465,)    # magic CIFAR-10 mean
-        std = (0.2470, 0.2435, 0.2616,)     # magic CIFAR-10 std
-        tfs = [transforms.ToTensor(),
-               transforms.Normalize(mean, std),
-               ]
-        if args.model.lower() == 'mlp':
-            tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
-        tfs = transforms.Compose(tfs)
-
         # Load datasets
         train_data = datasets.CIFAR10(args.data_dir,
                                       train=True,
@@ -96,16 +139,6 @@ def get_datasets_from_args(args):
                                      transform=tfs)
         return train_data, test_data
     elif dataset == 'cifar100':
-        # Define transforms
-        mean = [0.5071, 0.4865, 0.4409]    # magic CIFAR-100 mean
-        std = [0.2673, 0.2564, 0.2762]     # magic CIFAR-100 std
-        tfs = [transforms.ToTensor(),
-               transforms.Normalize(mean, std),
-               ]
-        if args.model.lower() == 'mlp':
-            tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
-        tfs = transforms.Compose(tfs)
-
         # Load datasets
         train_data = datasets.CIFAR100(args.data_dir,
                                        train=True,
