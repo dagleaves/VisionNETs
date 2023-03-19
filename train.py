@@ -123,7 +123,7 @@ if __name__ == '__main__':
                         help='saved model checkpoints directory')
     # Data parameters
     parser.add_argument('--dataset', type=str, default='MNIST', metavar='D',
-                        choices=['MNIST', 'CIFAR10', 'CIFAR100'],
+                        choices=['MNIST', 'CIFAR10', 'CIFAR100. FashionMNIST, ImageNet'],
                         help='which dataset to use')
     parser.add_argument('--data_dir', type=str, default='data', metavar='D',
                         help='root data directory')
