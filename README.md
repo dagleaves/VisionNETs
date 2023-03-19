@@ -6,7 +6,7 @@ PyTorch implementations of popular vision neural networks
 | Model   	| MNIST   	  | CIFAR-10 	| CIFAR-100 	| ImageNet  | FashionMNIST  |
 |---------- |------------ |----------	|-----------	|----------	|-------------- |
 | MLP     	| 0.9671 	    | 0.4717   	| 0.2098    	|          	|               |
-| LeNet5  	| **0.9865**  | 0.6800   	|           	|          	|               |
+| LeNet5  	| **0.9865**  | **0.6800**|           	|          	|               |
 | AlexNet 	|        	    |          	|           	|          	|               |
 | ResNet  	|        	    |          	|           	|          	|               |
 
