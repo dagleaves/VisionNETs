@@ -75,8 +75,8 @@ def get_datasets_from_args(args):
         return train_data, test_data
     elif dataset == 'cifar10':
         # Define transforms
-        mean = (0.4914, 0.4822, 0.4465,)    # magic MNIST mean
-        std = (0.2470, 0.2435, 0.2616,)     # magic MNIST std
+        mean = (0.4914, 0.4822, 0.4465,)    # magic CIFAR-10 mean
+        std = (0.2470, 0.2435, 0.2616,)     # magic CIFAR-10 std
         tfs = [transforms.ToTensor(),
                transforms.Normalize(mean, std),
                ]
@@ -94,6 +94,28 @@ def get_datasets_from_args(args):
                                      train=False,
                                      download=True,
                                      transform=tfs)
+        return train_data, test_data
+    elif dataset == 'cifar100':
+        # Define transforms
+        mean = [0.5071, 0.4865, 0.4409]    # magic CIFAR-100 mean
+        std = [0.2673, 0.2564, 0.2762]     # magic CIFAR-100 std
+        tfs = [transforms.ToTensor(),
+               transforms.Normalize(mean, std),
+               ]
+        if args.model.lower() == 'mlp':
+            tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
+        tfs = transforms.Compose(tfs)
+
+        # Load datasets
+        train_data = datasets.CIFAR100(args.data_dir,
+                                       train=True,
+                                       download=True,
+                                       transform=tfs
+                                       )
+        test_data = datasets.CIFAR100(args.data_dir,
+                                      train=False,
+                                      download=True,
+                                      transform=tfs)
         return train_data, test_data
     else:
         raise NotImplementedError(f'Dataset {args.dataset} in not implemented')
