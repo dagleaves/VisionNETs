@@ -7,7 +7,7 @@ PyTorch implementations of popular vision neural networks
 |---------- |----------	|----------	|----------	|----------	|-------------- |
 | MLP     	| 0.9671    | 0.4717   	| 0.2098   	|          	|               |
 | LeNet5  	| 0.9865 	| 0.6800 	| 0.3172   	|          	|               |
-| AlexNet 	| 0.9831    |          	|           |          	|               |
+| AlexNet 	| 0.9831    | 0.6735   	| 0.1552	|          	|               |
 | ResNet  	|           |          	|          	|          	|               |
 | VGG16  	|           |          	|          	|          	|               |
 | GoogLeNet	|           |          	|          	|          	|               |
@@ -37,7 +37,7 @@ Any specific parameters used to achieve the results above:
 |---------	|--------  	|----------	|----------	|--------------	|----------	|
 | MLP     	| 2 epochs	| 5 epochs 	| 5 epochs 	|              	|          	|
 | LeNet5  	| 2 epochs 	| 5 epochs 	| 5 epochs 	|              	|          	|
-| AlexNet 	|        	|          	|           |              	|          	|
+| AlexNet 	| 2 epochs	| 5 epochs 	| 5 epochs  |              	|          	|
 | ResNet  	|        	|          	|           |              	|          	|
 | VGG16 	|        	|          	|           |              	|          	|
 | GoogLeNet	|        	|          	|           |              	|          	|
