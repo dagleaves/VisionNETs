@@ -3,12 +3,12 @@ PyTorch implementations of popular vision neural networks
 
 ## Results
 
-| Model   	| MNIST  	| ImageNet 	| CIFAR-10 	| CIFAR-100 	| FashionMNIST 	|
-|---------	|--------	|----------	|----------	|-----------	|--------------	|
-| MLP     	| 0.9671 	|          	| 0.4717   	| 0.2098    	|              	|
-| LeNet5  	| 0.9865 	|          	| 0.6800   	|           	|              	|
-| AlexNet 	|        	|          	|          	|           	|              	|
-| ResNet  	|        	|          	|          	|           	|              	|
+| Model   	| MNIST   	  | CIFAR-10 	| CIFAR-100 	| ImageNet  | FashionMNIST  |
+|---------- |------------ |----------	|-----------	|----------	|               |
+| MLP     	| 0.9671 	    | 0.4717   	| 0.2098    	|          	|               |
+| LeNet5  	| **0.9865**  | 0.6800   	|           	|          	|               |
+| AlexNet 	|        	    |          	|           	|          	|               |
+| ResNet  	|        	    |          	|           	|          	|               |
 
 ## Models
 
@@ -24,16 +24,16 @@ PyTorch implementations of popular vision neural networks
 - [x] MNIST
 - [ ] ImageNet
 - [x] CIFAR-10
-- [ ] CIFAR-100
+- [x] CIFAR-100
 - [ ] FashionMNIST
 
 ## Replication Details
 
 Any specific parameters used to achieve the results above:
 
-| Model   	| MNIST  	| ImageNet 	| CIFAR-10 	| CIFAR-100 	| FashionMNIST 	|
-|---------	|--------	|----------	|----------	|-----------	|--------------	|
-| MLP     	| 2 epochs 	|          	| 5 epochs 	| 5 epochs    	|              	|
+| Model   	| MNIST  	  | ImageNet 	| CIFAR-10 	| CIFAR-100 	| FashionMNIST 	|
+|---------	|--------	  |----------	|----------	|-----------	|--------------	|
+| MLP     	| 2 epochs 	|          	| 5 epochs 	| 5 epochs   	|              	|
 | LeNet5  	| 2 epochs 	|          	| 5 epochs 	|           	|              	|
-| AlexNet 	|        	|          	|          	|           	|              	|
-| ResNet  	|        	|          	|          	|           	|              	|
+| AlexNet 	|        	  |          	|          	|           	|              	|
+| ResNet  	|        	  |          	|          	|           	|              	|
