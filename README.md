@@ -3,12 +3,12 @@ PyTorch implementations of popular vision neural networks
 
 ## Results
 
-| Model   	| MNIST  	| ImageNet 	| CIFAR-10 	| FashionMNIST 	|
-|---------	|--------	|----------	|----------	|--------------	|
-| MLP     	| 0.9671  	|          	| 0.4717   	|              	|
-| LeNet5  	| 0.9865 	|          	| 0.6800   	|              	|
-| AlexNet 	|        	|          	|          	|              	|
-| ResNet  	|        	|          	|          	|              	|
+| Model   	| MNIST  	| ImageNet 	| CIFAR-10 	| CIFAR-100 	| FashionMNIST 	|
+|---------	|--------	|----------	|----------	|-----------	|--------------	|
+| MLP     	| 0.9671 	|          	| 0.4717   	| 0.2098    	|              	|
+| LeNet5  	| 0.9865 	|          	| 0.6800   	|           	|              	|
+| AlexNet 	|        	|          	|          	|           	|              	|
+| ResNet  	|        	|          	|          	|           	|              	|
 
 ## Models
 
@@ -31,9 +31,9 @@ PyTorch implementations of popular vision neural networks
 
 Any specific parameters used to achieve the results above:
 
-| Model   	| MNIST  	| ImageNet 	| CIFAR-10 	| FashionMNIST 	|
-|---------	|--------	|----------	|----------	|--------------	|
-| MLP     	| 2 epochs  |          	| 5 epochs 	|              	|
-| LeNet5  	| 2 epochs 	|          	| 5 epochs  |              	|
-| AlexNet 	|        	|          	|          	|              	|
-| ResNet  	|        	|          	|          	|              	|
+| Model   	| MNIST  	| ImageNet 	| CIFAR-10 	| CIFAR-100 	| FashionMNIST 	|
+|---------	|--------	|----------	|----------	|-----------	|--------------	|
+| MLP     	| 2 epochs 	|          	| 5 epochs 	| 5 epochs    	|              	|
+| LeNet5  	| 2 epochs 	|          	| 5 epochs 	|           	|              	|
+| AlexNet 	|        	|          	|          	|           	|              	|
+| ResNet  	|        	|          	|          	|           	|              	|
