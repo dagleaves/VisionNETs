@@ -61,6 +61,9 @@ def get_dataset_mean_std(dataset):
     elif dataset == 'cifar100':
         mean = (0.5071, 0.4865, 0.4409)
         std = (0.2673, 0.2564, 0.2762)
+    elif dataset == 'imagenet':
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
     else:
         raise NotImplementedError('Mean and std not available for ' + dataset + ' dataset')
     return mean, std
@@ -124,7 +127,8 @@ def get_datasets_from_args(args):
         test_data = datasets.MNIST(args.data_dir,
                                    train=False,
                                    download=True,
-                                   transform=tfs)
+                                   transform=tfs
+                                   )
         return train_data, test_data
     elif dataset == 'cifar10':
         # Load datasets
@@ -136,7 +140,8 @@ def get_datasets_from_args(args):
         test_data = datasets.CIFAR10(args.data_dir,
                                      train=False,
                                      download=True,
-                                     transform=tfs)
+                                     transform=tfs
+                                     )
         return train_data, test_data
     elif dataset == 'cifar100':
         # Load datasets
@@ -148,7 +153,19 @@ def get_datasets_from_args(args):
         test_data = datasets.CIFAR100(args.data_dir,
                                       train=False,
                                       download=True,
-                                      transform=tfs)
+                                      transform=tfs
+                                      )
+        return train_data, test_data
+    elif dataset == 'imagenet':
+        # Load datasets
+        train_data = datasets.ImageNet(args.data_dir + '/imagenet',
+                                       split='train',
+                                       transform=tfs
+                                       )
+        test_data = datasets.ImageNet(args.data_dir + '/imagenet',
+                                      split='val',
+                                      transform=tfs
+                                      )
         return train_data, test_data
     else:
         raise NotImplementedError(f'Dataset {args.dataset} in not implemented')
@@ -202,7 +219,7 @@ def setup_sweep(args):
     assert args.wandb, 'In order to sweep, wandb must be enabled'
 
     # Load sweep config
-    source_dir = Path(__file__).resolve().parent
+    source_dir = Path(__file__).resolve().parent    # utils folder
     with open(source_dir / 'wandb_config.yaml', 'r') as config_file:
         sweep_config = yaml.safe_load(config_file)
 
