@@ -65,7 +65,7 @@ class AlexNet(nn.Module):
         elif dataset == 'cifar100':
             return AlexNet(in_channels=3, in_dim=64, out_features=100)
         elif dataset == 'fashionmnist':
-            return AlexNet(in_channels=3, in_dim=64, out_features=10)
+            return AlexNet(in_channels=1, in_dim=64, out_features=10)
         elif dataset == 'imagenet':
             return AlexNet(in_channels=3, in_dim=224, out_features=1000)
         else:
