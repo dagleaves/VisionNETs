@@ -154,7 +154,7 @@ def get_datasets_from_args(args):
                                       download=True,
                                       transform=tfs
                                       )
-    elif dataset == 'cifar100':
+    elif dataset == 'fashionmnist':
         train_data = datasets.FashionMNIST(args.data_dir,
                                            train=True,
                                            download=True,
@@ -175,7 +175,7 @@ def get_datasets_from_args(args):
                                       transform=tfs
                                       )
     else:
-        raise NotImplementedError(f'Dataset {args.dataset} in not implemented')
+        raise NotImplementedError('Dataset ' + args.dataset + ' not implemented')
     return train_data, test_data
 
 
