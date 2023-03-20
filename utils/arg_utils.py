@@ -120,8 +120,8 @@ def get_datasets_from_args(args):
     """
     dataset = args.dataset.lower()
     tfs = get_transforms_from_args(args)
+    # Load datasets
     if dataset == 'mnist':
-        # Load datasets
         train_data = datasets.MNIST(args.data_dir,
                                     train=True,
                                     download=True,
@@ -132,9 +132,7 @@ def get_datasets_from_args(args):
                                    download=True,
                                    transform=tfs
                                    )
-        return train_data, test_data
     elif dataset == 'cifar10':
-        # Load datasets
         train_data = datasets.CIFAR10(args.data_dir,
                                       train=True,
                                       download=True,
@@ -145,9 +143,7 @@ def get_datasets_from_args(args):
                                      download=True,
                                      transform=tfs
                                      )
-        return train_data, test_data
     elif dataset == 'cifar100':
-        # Load datasets
         train_data = datasets.CIFAR100(args.data_dir,
                                        train=True,
                                        download=True,
@@ -158,9 +154,18 @@ def get_datasets_from_args(args):
                                       download=True,
                                       transform=tfs
                                       )
-        return train_data, test_data
+    elif dataset == 'cifar100':
+        train_data = datasets.FashionMNIST(args.data_dir,
+                                           train=True,
+                                           download=True,
+                                           transform=tfs
+                                           )
+        test_data = datasets.FashionMNIST(args.data_dir,
+                                          train=False,
+                                          download=True,
+                                          transform=tfs
+                                          )
     elif dataset == 'imagenet':
-        # Load datasets
         train_data = datasets.ImageNet(args.data_dir + '/imagenet',
                                        split='train',
                                        transform=tfs
@@ -169,9 +174,9 @@ def get_datasets_from_args(args):
                                       split='val',
                                       transform=tfs
                                       )
-        return train_data, test_data
     else:
         raise NotImplementedError(f'Dataset {args.dataset} in not implemented')
+    return train_data, test_data
 
 
 def get_train_val_split(args, dataset):
