@@ -33,5 +33,7 @@ class MLP(nn.Module):
             return MLP(in_features=3*32*32, hidden_features=128)
         elif dataset == 'cifar100':
             return MLP(in_features=3*32*32, hidden_features=512, out_features=100)
+        elif dataset == 'fashionmnist':
+            return MLP()
         else:
             raise NotImplementedError('MLP not implemented for ' + args.dataset + ' dataset')
