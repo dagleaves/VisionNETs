@@ -77,11 +77,12 @@ def get_resize_transforms(dataset, model):
     if dataset != 'imagenet':
         if model in ['mlp', 'lenet5']:  # No resizing necessary
             return []
-        else:   # upscale to 64x64
+        else:   # upscale to 224x224
             return [
-                transforms.Resize((70, 70)),
-                transforms.CenterCrop((64, 64))
+                transforms.Resize((227, 227)),
+                transforms.CenterCrop((224, 224))
             ]
+    # ImageNet
     if model in ['mlp', 'lenet5']:
         raise NotImplementedError('Can ImageNet be used for MLP or LeNet5? # TODO')
     else:   # Standard ImageNet size

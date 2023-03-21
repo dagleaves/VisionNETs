@@ -18,6 +18,7 @@ def train(model, optimizer, criterion, train_loader, device, epoch):
 
         # Update model parameters
         output = model(data)
+
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()

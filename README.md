@@ -3,14 +3,14 @@ PyTorch implementations of popular vision neural networks
 
 ## Results
 
-| Model   	| MNIST 	| CIFAR-10 	| CIFAR-100	| FashionMNIST  | ImageNet  |
-|---------- |----------	|----------	|----------	|--------------	|-------------- |
-| MLP     	| 0.9671    | 0.4717   	| 0.2098   	| 0.8734 		|               |
-| LeNet5  	| 0.9865 	| 0.6800 	| 0.3172   	| 0.8917   		|               |
-| AlexNet 	| 0.9831    | 0.6735   	| 0.1552	|          		|               |
-| ResNet  	|           |          	|          	|          		|               |
-| VGG16  	|           |          	|          	|          		|               |
-| GoogLeNet	|           |          	|          	|          		|               |
+| Model   	| MNIST 	  | CIFAR-10 	| CIFAR-100	| FashionMNIST  | ImageNet  |
+|---------- |----------|----------	|----------	|--------------	|-------------- |
+| MLP     	| 0.9671   | 0.4717   	| 0.2098   	| 0.8734 		|               |
+| LeNet5  	| 0.9865   | 0.6800 	| 0.3172   	| 0.8917   		|               |
+| AlexNet 	| 0.9914   | 0.7404   	| 0.3485	| 0.9058   		|               |
+| ResNet  	|          |          	|          	|          		|               |
+| VGG16  	|          |          	|          	|          		|               |
+| GoogLeNet	|          |          	|          	|          		|               |
 
 ## Models
 
@@ -41,3 +41,8 @@ Any specific parameters used to achieve the results above:
 | ResNet  	|        	|          	|           |              	|          	|
 | VGG16 	|        	|          	|           |              	|          	|
 | GoogLeNet	|        	|          	|           |              	|          	|
+
+## Pre-Trained Weights
+
+Due to the size of the larger model weights, I had to move the pre-trained model checkpoints to a Google Drive folder.
+You may access the pre-trained weights at the following link: [Google Drive](https://drive.google.com/drive/folders/12HhPDR_I2pdhZ5VBbv56mn2bZWVrdK1t?usp=share_link)
