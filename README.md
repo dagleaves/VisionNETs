@@ -3,14 +3,14 @@ PyTorch implementations of popular vision neural networks
 
 ## Results
 
-| Model   	| MNIST 	| CIFAR-10 	| CIFAR-100	| ImageNet  | FashionMNIST  |
-|---------- |----------	|----------	|----------	|----------	|-------------- |
-| MLP     	| 0.9671    | 0.4717   	| 0.2098   	|          	|               |
-| LeNet5  	| 0.9865 	| 0.6800 	| 0.3172   	|          	|               |
-| AlexNet 	| 0.9831    | 0.6735   	| 0.1552	|          	|               |
-| ResNet  	|           |          	|          	|          	|               |
-| VGG16  	|           |          	|          	|          	|               |
-| GoogLeNet	|           |          	|          	|          	|               |
+| Model   	| MNIST 	| CIFAR-10 	| CIFAR-100	| FashionMNIST  | ImageNet  |
+|---------- |----------	|----------	|----------	|--------------	|-------------- |
+| MLP     	| 0.9671    | 0.4717   	| 0.2098   	| 0.8734 		|               |
+| LeNet5  	| 0.9865 	| 0.6800 	| 0.3172   	| 0.8917   		|               |
+| AlexNet 	| 0.9831    | 0.6735   	| 0.1552	|          		|               |
+| ResNet  	|           |          	|          	|          		|               |
+| VGG16  	|           |          	|          	|          		|               |
+| GoogLeNet	|           |          	|          	|          		|               |
 
 ## Models
 
@@ -26,7 +26,7 @@ PyTorch implementations of popular vision neural networks
 - [x] MNIST
 - [x] CIFAR-10
 - [x] CIFAR-100
-- [ ] FashionMNIST
+- [x] FashionMNIST
 - [ ] ImageNet
 
 ## Replication Details
@@ -35,8 +35,8 @@ Any specific parameters used to achieve the results above:
 
 | Model   	| MNIST    	| CIFAR-10 	| CIFAR-100	| FashionMNIST 	| ImageNet 	|
 |---------	|--------  	|----------	|----------	|--------------	|----------	|
-| MLP     	| 2 epochs	| 5 epochs 	| 5 epochs 	|              	|          	|
-| LeNet5  	| 2 epochs 	| 5 epochs 	| 5 epochs 	|              	|          	|
+| MLP     	| 2 epochs	| 5 epochs 	| 5 epochs 	| 5 epochs	 	|          	|
+| LeNet5  	| 2 epochs 	| 5 epochs 	| 5 epochs 	| 5 epochs     	|          	|
 | AlexNet 	| 2 epochs	| 5 epochs 	| 5 epochs  |              	|          	|
 | ResNet  	|        	|          	|           |              	|          	|
 | VGG16 	|        	|          	|           |              	|          	|

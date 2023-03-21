@@ -44,7 +44,7 @@ class LeNet5(nn.Module):
             return LeNet5(in_channels=3, out_features=10)
         elif dataset == 'cifar100':
             return LeNet5(in_channels=3, out_features=100)
-        elif dataset == 'mnist':
+        elif dataset == 'fashionmnist':
             return LeNet5(in_channels=1, out_features=10)
         else:
             raise NotImplementedError('LeNet5 not implemented for ' + args.dataset + ' dataset')

@@ -57,10 +57,6 @@ def test(model, criterion, data_loader, device, testing=False):
                 'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=test_loss),
                 'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=test_accuracy)
             })
-            arg_utils.wandb_log(args, {
-                'val_loss': test_loss.avg,
-                'val_acc': test_accuracy.avg
-            })
 
     return test_loss.avg, test_accuracy.avg
 
@@ -99,6 +95,10 @@ def main():
         pbar.set_postfix({
             'loss': val_loss,
             'acc': val_acc
+        })
+        arg_utils.wandb_log(args, {
+            'val_loss': val_loss,
+            'val_acc': val_acc
         })
 
     # Save final model
