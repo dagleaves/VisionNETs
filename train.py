@@ -1,5 +1,5 @@
 import utils as arg_utils
-from utils import AverageMeter, calc_metrics, BestCheckpointSaver, save_checkpoint
+from utils import AverageMeter, calc_metrics, update_metrics, BestCheckpointSaver, save_checkpoint
 from tqdm import tqdm, trange
 import argparse
 import torch
@@ -8,6 +8,7 @@ import wandb
 
 def train(model, optimizer, criterion, train_loader, device, epoch):
     train_accuracy = AverageMeter()
+    top5_accuracy = AverageMeter()
     train_loss = AverageMeter()
     model.train()
 
@@ -24,13 +25,11 @@ def train(model, optimizer, criterion, train_loader, device, epoch):
         optimizer.step()
 
         # Update metrics
-        metrics = calc_metrics(output.cpu(), target.cpu())
-        train_accuracy.update(metrics['accuracy'], target.size(0))
-        train_loss.update(loss.item(), target.size(0))
-        pbar.set_postfix({
-            'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=train_loss),
-            'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=train_accuracy)
-        })
+        metrics = calc_metrics(args, output.cpu(), target.cpu())
+        metrics['loss'] = loss.item()
+
+        postfix = update_metrics(metrics, train_accuracy, top5_accuracy, loss.item(), target.size(0))
+        pbar.set_postfix(postfix)
         arg_utils.wandb_log(args, {
             'epoch': epoch + 1,
             'train_loss': train_loss.avg,

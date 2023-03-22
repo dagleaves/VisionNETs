@@ -2,18 +2,54 @@ from sklearn import metrics
 import torch
 
 
-def calc_metrics(prediction, target):
+def calc_metrics(args, prediction, target):
     """
     Calculate batch metrics for logging
+    :param args: arguments with dataset selection
     :param prediction: model output
     :param target: target for data
     :return: dict containing desired metrics
     """
     pred_label = torch.argmax(prediction, dim=1)
-    accuracy = metrics.accuracy_score(pred_label, target)
+    top1_accuracy = metrics.accuracy_score(target, pred_label)
+    if args.dataset.lower() == 'imagenet':
+        with torch.no_grad():
+            top5_accuracy = metrics.top_k_accuracy_score(target, prediction)
+        return {
+            'top1': top1_accuracy,
+            'top5': top5_accuracy
+        }
     return {
-        'accuracy': accuracy
+        'top1': top1_accuracy
     }
+
+
+def update_metrics(new_metrics: dict,
+                   top1_accuracy: 'AverageMeter',
+                   top5_accuracy: 'AverageMeter',
+                   loss: 'AverageMeter',
+                   batch_size: int
+                   ):
+    """
+    Update metric trackers with new metrics for a batch of data
+    :param new_metrics:     batch metric values
+    :param top1_accuracy:   top1 accuracy AverageMeter
+    :param top5_accuracy:   top5 accuracy AverageMeter
+    :param loss:            loss AverageMeter
+    :param batch_size:      batch size
+    :return: Updated tqdm postfix
+    """
+    top1_accuracy.update(metrics['top1'], batch_size)
+    loss.update(loss, batch_size)
+    postfix = {
+        'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=loss),
+        'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=top1_accuracy)
+    }
+    if 'top5' in new_metrics.keys():
+        top5_accuracy.update(metrics['top5'], batch_size)
+        postfix['top5'] = '{top5.val:.3f} ({top5.avg:.3f})'.format(top5=top5_accuracy)
+
+    return postfix
 
 
 def save_checkpoint(model, optimizer, criterion, epoch, args, best=False):
