@@ -27,7 +27,7 @@ PyTorch implementations of popular vision neural networks
 - [x] CIFAR-10
 - [x] CIFAR-100
 - [x] FashionMNIST
-- [ ] ImageNet
+- [x] ImageNet
 
 ## Replication Details
 
@@ -37,7 +37,7 @@ Any specific parameters used to achieve the results above:
 |---------	|--------  	|----------	|----------	|--------------	|----------	|
 | MLP     	| 2 epochs	| 5 epochs 	| 5 epochs 	| 5 epochs	 	|          	|
 | LeNet5  	| 2 epochs 	| 5 epochs 	| 5 epochs 	| 5 epochs     	|          	|
-| AlexNet 	| 2 epochs	| 5 epochs 	| 5 epochs  |              	|          	|
+| AlexNet 	| 2 epochs	| 5 epochs 	| 5 epochs  | 5 epochs     	|          	|
 | ResNet  	|        	|          	|           |              	|          	|
 | VGG16 	|        	|          	|           |              	|          	|
 | GoogLeNet	|        	|          	|           |              	|          	|
