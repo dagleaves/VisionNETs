@@ -50,7 +50,7 @@ def test(model, criterion, data_loader, device, testing=False):
             loss = criterion(output, target)
 
             # Update metrics
-            metrics = calc_metrics(output.cpu(), target.cpu())
+            metrics = calc_metrics(args, output.cpu(), target.cpu())
             metrics['loss'] = loss.item()
             postfix = update_metrics(metrics, test_accuracy, top5_accuracy, test_loss, target.size(0))
             pbar.set_postfix(postfix)
@@ -99,7 +99,7 @@ def main():
         })
 
     # Save final model
-    save_checkpoint(model, optimizer, criterion, epoch, args)
+    save_checkpoint(model, optimizer, criterion, args.n_epochs - 1, args)
 
     # Test model on test set
     test_loss, test_acc = test(model, criterion, test_loader, device, testing=True)
