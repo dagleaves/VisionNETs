@@ -37,7 +37,7 @@ def get_optimizer_from_args(args, model):
     """
     optim_arg = args.optim.lower()
     if optim_arg == 'sgd':
-        return SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+        return SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.decay)
     elif optim_arg == 'adam':
         return Adam(model.parameters(), lr=args.lr)
     elif optim_arg == 'adamw':
@@ -77,19 +77,13 @@ def get_resize_transforms(dataset, model):
     if dataset != 'imagenet':
         if model in ['mlp', 'lenet5']:  # No resizing necessary
             return []
-        else:   # upscale to 224x224
-            return [
-                transforms.Resize((227, 227)),
-                transforms.CenterCrop((224, 224))
-            ]
-    # ImageNet
     if model in ['mlp', 'lenet5']:
         raise NotImplementedError('Can ImageNet be used for MLP or LeNet5? # TODO')
-    else:   # Standard ImageNet size
-        return [
-            transforms.Resize((227, 227)),
-            transforms.CenterCrop((224, 224))
-        ]
+
+    return [
+        transforms.Resize((227, 227)),
+        transforms.CenterCrop((224, 224))
+    ]
 
 
 def get_transforms_from_args(args):
