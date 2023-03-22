@@ -27,8 +27,7 @@ def train(model, optimizer, criterion, train_loader, device, epoch):
         # Update metrics
         metrics = calc_metrics(args, output.cpu(), target.cpu())
         metrics['loss'] = loss.item()
-
-        postfix = update_metrics(metrics, train_accuracy, top5_accuracy, loss.item(), target.size(0))
+        postfix = update_metrics(metrics, train_accuracy, top5_accuracy, train_loss, target.size(0))
         pbar.set_postfix(postfix)
         arg_utils.wandb_log(args, {
             'epoch': epoch + 1,
@@ -39,6 +38,7 @@ def train(model, optimizer, criterion, train_loader, device, epoch):
 
 def test(model, criterion, data_loader, device, testing=False):
     test_accuracy = AverageMeter()
+    top5_accuracy = AverageMeter()
     test_loss = AverageMeter()
     model.eval()
 
@@ -51,12 +51,9 @@ def test(model, criterion, data_loader, device, testing=False):
 
             # Update metrics
             metrics = calc_metrics(output.cpu(), target.cpu())
-            test_accuracy.update(metrics['accuracy'], target.size(0))
-            test_loss.update(loss.item(), target.size(0))
-            pbar.set_postfix({
-                'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=test_loss),
-                'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=test_accuracy)
-            })
+            metrics['loss'] = loss.item()
+            postfix = update_metrics(metrics, test_accuracy, top5_accuracy, test_loss, target.size(0))
+            pbar.set_postfix(postfix)
 
     return test_loss.avg, test_accuracy.avg
 
@@ -142,6 +139,8 @@ if __name__ == '__main__':
                         help='learning rate (default: 0.01)')
     parser.add_argument('--momentum', type=float, default=0.9, metavar='N',
                         help='momentum (default: 0.9)')
+    parser.add_argument('--decay', type=float, default=0.0, metavar='N',
+                        help='weight decay (default: 0.0)')
     # Miscellaneous
     parser.add_argument('--seed', type=int, default=2, metavar='S',
                         help='random seed (default: 2)')

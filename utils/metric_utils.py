@@ -14,7 +14,7 @@ def calc_metrics(args, prediction, target):
     top1_accuracy = metrics.accuracy_score(target, pred_label)
     if args.dataset.lower() == 'imagenet':
         with torch.no_grad():
-            top5_accuracy = metrics.top_k_accuracy_score(target, prediction)
+            top5_accuracy = metrics.top_k_accuracy_score(target, prediction, k=5, labels=range(1000))
         return {
             'top1': top1_accuracy,
             'top5': top5_accuracy
@@ -39,14 +39,14 @@ def update_metrics(new_metrics: dict,
     :param batch_size:      batch size
     :return: Updated tqdm postfix
     """
-    top1_accuracy.update(metrics['top1'], batch_size)
-    loss.update(loss, batch_size)
+    top1_accuracy.update(new_metrics['top1'], batch_size)
+    loss.update(new_metrics['loss'], batch_size)
     postfix = {
         'loss': '{loss.val:.3f} ({loss.avg:.3f})'.format(loss=loss),
         'acc': '{acc.val:.3f} ({acc.avg:.3f})'.format(acc=top1_accuracy)
     }
     if 'top5' in new_metrics.keys():
-        top5_accuracy.update(metrics['top5'], batch_size)
+        top5_accuracy.update(new_metrics['top5'], batch_size)
         postfix['top5'] = '{top5.val:.3f} ({top5.avg:.3f})'.format(top5=top5_accuracy)
 
     return postfix
