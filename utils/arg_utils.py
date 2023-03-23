@@ -77,7 +77,7 @@ def get_dataset_mean_std(dataset):
 def get_resize_transforms(dataset, model):
     # Non-imagenet dataset
     if dataset != 'imagenet':
-        if model in ['mlp', 'lenet5']:  # No resizing necessary
+        if model != 'alexnet':  # No resizing necessary for smaller datasets
             return []
     if model in ['mlp', 'lenet5']:
         raise NotImplementedError('Can ImageNet be used for MLP or LeNet5? # TODO')
