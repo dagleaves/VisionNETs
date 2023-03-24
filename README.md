@@ -9,7 +9,7 @@ PyTorch implementations of popular vision neural networks
 | LeNet5  	| 0.9865   | 0.6800 	| 0.3172   	| 0.8917   		|               |
 | AlexNet 	| 0.9914   | 0.7404   	| 0.3485	| 0.9058   		|               |
 | ResNet  	|          |          	|          	|          		|               |
-| VGG16  	|          | 0.8477   	|          	|          		|               |
+| VGG16  	| 0.9931   | 0.8477   	|          	|          		|               |
 | GoogLeNet	|          |          	|          	|          		|               |
 
 ## Models
@@ -39,7 +39,7 @@ Any specific parameters used to achieve the results above:
 | LeNet5  	| 2 epochs 	| 5 epochs 	| 5 epochs 	| 5 epochs     	|          	|
 | AlexNet 	| 2 epochs	| 5 epochs 	| 5 epochs  | 5 epochs     	|          	|
 | ResNet  	|        	|          	|           |              	|          	|
-| VGG16 	|        	| 20 epochs	|           |              	|          	|
+| VGG16 	| 4 epochs <br> 0.001 LR	| 20 epochs	|           |              	|          	|
 | GoogLeNet	|        	|          	|           |              	|          	|
 
 ## Pre-Trained Weights
