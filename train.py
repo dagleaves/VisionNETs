@@ -124,8 +124,8 @@ if __name__ == '__main__':
                         help='which dataset to use')
     parser.add_argument('--data_dir', type=str, default='data', metavar='D',
                         help='root data directory')
-    parser.add_argument('--batch_size_train', type=int, default=32, metavar='N',
-                        help='input batch size for training (default: 32)')
+    parser.add_argument('--batch_size_train', type=int, default=64, metavar='N',
+                        help='input batch size for training (default: 64)')
     parser.add_argument('--batch_size_test', type=int, default=64, metavar='N',
                         help='input batch size for testing (default: 64)')
     parser.add_argument('--epochs', type=int, default=2, metavar='N',
