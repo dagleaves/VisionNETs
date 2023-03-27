@@ -6,7 +6,7 @@ import torch
 import wandb
 
 
-def train(model, optimizer, criterion, train_loader, device, epoch):
+def train(model, optimizer, scheduler, criterion, train_loader, device, epoch):
     train_accuracy = AverageMeter()
     top5_accuracy = AverageMeter()
     train_loss = AverageMeter()
@@ -23,6 +23,10 @@ def train(model, optimizer, criterion, train_loader, device, epoch):
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
+
+        # NOTE: Usually, you will take an LR scheduler step at the end of a training epoch
+        # However, using OneCycleLR, you step after each batch as seen here
+        scheduler.step()
 
         # Update metrics
         metrics = calc_metrics(args, output.cpu(), target.cpu())
@@ -77,14 +81,19 @@ def main():
     train_data, test_data = arg_utils.get_datasets_from_args(args)
     train_loader, val_loader = arg_utils.get_train_val_split(args, train_data)
     test_loader = torch.utils.data.DataLoader(test_data,
-                                              batch_size=args.batch_size_test,
+                                              batch_size=args.batch_size,
                                               num_workers=args.workers,
                                               shuffle=False)
+    # Initialize LR Scheduler
+    scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer,
+                                                    max_lr=args.lr,
+                                                    steps_per_epoch=len(train_loader),
+                                                    epochs=args.epochs)
 
     # Train model
     pbar = trange(args.epochs, desc='Training', unit='epoch')
     for epoch in pbar:
-        train(model, optimizer, criterion, train_loader, device, epoch)
+        train(model, optimizer, scheduler, criterion, train_loader, device, epoch)
         val_loss, val_acc = test(model, criterion, val_loader, device)
         save_best_checkpoint(val_loss, model, criterion, optimizer, epoch, args)
 
@@ -124,10 +133,8 @@ if __name__ == '__main__':
                         help='which dataset to use')
     parser.add_argument('--data_dir', type=str, default='data', metavar='D',
                         help='root data directory')
-    parser.add_argument('--batch_size_train', type=int, default=64, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
-    parser.add_argument('--batch_size_test', type=int, default=64, metavar='N',
-                        help='input batch size for testing (default: 64)')
     parser.add_argument('--epochs', type=int, default=2, metavar='N',
                         help='number of training epochs (default: 2)')
     parser.add_argument('--val_pc', default=0.1, type=float,
