@@ -9,7 +9,7 @@ PyTorch implementations of popular vision neural networks
 | LeNet5  	| 0.9865   | 0.6800 	| 0.3172   	| 0.8917   		|               |
 | AlexNet 	| 0.9914   | 0.7404   	| 0.3485	| 0.9058   		|               |
 | ResNet  	|          |          	|          	|          		|               |
-| VGG16  	| 0.9931   | 0.8477   	| 0.4449   	| 0.9234   		|               |
+| VGG16  	| 0.9956   | 0.8696   	| 0.5581   	| 0.9390   		|               |
 | GoogLeNet	|          |          	|          	|          		|               |
 
 ## Models
@@ -35,11 +35,11 @@ Any specific parameters used to achieve the results above:
 
 | Model   	| MNIST    	| CIFAR-10 	| CIFAR-100	| FashionMNIST 	| ImageNet 	|
 |---------	|--------  	|----------	|----------	|--------------	|----------	|
-| MLP     	| 2 epochs	| 5 epochs 	| 5 epochs 	| 5 epochs	 	|          	|
+| MLP     	| 15 epochs	| 10 epochs | 10 epochs | 10 epochs	 	|          	|
 | LeNet5  	| 2 epochs 	| 5 epochs 	| 5 epochs 	| 5 epochs     	|          	|
 | AlexNet 	| 2 epochs	| 5 epochs 	| 5 epochs  | 5 epochs     	|          	|
 | ResNet  	|        	|          	|           |              	|          	|
-| VGG16 	| 4 epochs <br> 0.001 LR	| 20 epochs	| 10 epochs  | 7 epochs 	|          	|
+| VGG16 	| 5 epochs	| 20 epochs	| 10 epochs | 7 epochs 		|          	|
 | GoogLeNet	|        	|          	|           |              	|          	|
 
 ## Pre-Trained Weights

@@ -75,6 +75,7 @@ def get_dataset_mean_std(dataset):
 
 
 def get_resize_transforms(dataset, model):
+    return []
     # Non-imagenet dataset
     if dataset != 'imagenet':
         if model != 'alexnet':  # No resizing necessary for smaller datasets
@@ -99,13 +100,13 @@ def get_transforms_from_args(args):
     mean, std = get_dataset_mean_std(dataset)
 
     # Compose transforms
-    tfs = get_resize_transforms(dataset, model)
-    tfs += [
+    # tfs = get_resize_transforms(dataset, model)
+    tfs = [
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
     ]
-    if model == 'mlp':
-        tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
+    # if model == 'mlp':
+    #     tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
     return transforms.Compose(tfs)
 
 
@@ -190,11 +191,13 @@ def get_train_val_split(args, dataset):
                                                batch_size=args.batch_size,
                                                sampler=train_sampler,
                                                num_workers=args.workers,
+                                               pin_memory=True
                                                )
     val_loader = torch.utils.data.DataLoader(dataset,
                                              batch_size=args.batch_size,
                                              sampler=val_sampler,
-                                             num_workers=args.workers
+                                             num_workers=args.workers,
+                                             pin_memory=True
                                              )
     return train_loader, val_loader
 
