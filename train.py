@@ -1,5 +1,6 @@
+import utils
 import utils as arg_utils
-from utils import AverageMeter, calc_metrics, update_metrics, BestCheckpointSaver, save_checkpoint
+from utils import AverageMeter, calc_metrics, update_metrics, save_checkpoint
 from tqdm import tqdm, trange
 import argparse
 import torch
@@ -72,10 +73,10 @@ def main():
     # Get updated sweep args if enabled
     args = arg_utils.get_sweep_args(args)
 
+    # Initialize model
     model = arg_utils.get_model_from_args(args).to(device)
     optimizer = arg_utils.get_optimizer_from_args(args, model)
     criterion = torch.nn.CrossEntropyLoss()
-    save_best_checkpoint = BestCheckpointSaver()
 
     # Load data
     train_data, test_data = arg_utils.get_datasets_from_args(args)
@@ -95,7 +96,6 @@ def main():
     for epoch in pbar:
         train(model, optimizer, scheduler, criterion, train_loader, device, epoch)
         val_loss, val_acc = test(model, criterion, val_loader, device)
-        save_best_checkpoint(val_loss, model, criterion, optimizer, epoch, args)
 
         # Logging
         pbar.set_postfix({

@@ -74,21 +74,6 @@ def get_dataset_mean_std(dataset):
     return mean, std
 
 
-def get_resize_transforms(dataset, model):
-    return []
-    # Non-imagenet dataset
-    if dataset != 'imagenet':
-        if model != 'alexnet':  # No resizing necessary for smaller datasets
-            return []
-    if model in ['mlp', 'lenet5']:
-        raise NotImplementedError('Can ImageNet be used for MLP or LeNet5? # TODO')
-
-    return [
-        transforms.Resize((227, 227)),
-        transforms.CenterCrop((224, 224))
-    ]
-
-
 def get_transforms_from_args(args):
     """
     Get dataset transforms from args
@@ -96,18 +81,12 @@ def get_transforms_from_args(args):
     :return: torchvision.transforms.Compose
     """
     dataset = args.dataset.lower()
-    model = args.model.lower()
     mean, std = get_dataset_mean_std(dataset)
 
-    # Compose transforms
-    # tfs = get_resize_transforms(dataset, model)
-    tfs = [
+    return transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
-    ]
-    # if model == 'mlp':
-    #     tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
-    return transforms.Compose(tfs)
+    ])
 
 
 def get_datasets_from_args(args):
