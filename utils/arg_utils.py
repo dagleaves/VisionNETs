@@ -74,6 +74,15 @@ def get_dataset_mean_std(dataset):
     return mean, std
 
 
+def get_resize_transforms(model):
+    if model == 'alexnet':
+        return [
+            transforms.Resize((227, 227)),
+            transforms.CenterCrop((224, 224))
+        ]
+    return []
+
+
 def get_transforms_from_args(args):
     """
     Get dataset transforms from args
@@ -81,12 +90,15 @@ def get_transforms_from_args(args):
     :return: torchvision.transforms.Compose
     """
     dataset = args.dataset.lower()
+    model = args.model.lower()
     mean, std = get_dataset_mean_std(dataset)
 
-    return transforms.Compose([
+    tfs = get_resize_transforms(model)
+    tfs += [
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
-    ])
+    ]
+    return transforms.Compose(tfs)
 
 
 def get_datasets_from_args(args):
