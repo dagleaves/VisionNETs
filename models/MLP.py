@@ -1,5 +1,6 @@
-import torch.nn as nn
 import torch.nn.functional as F
+import torch.nn as nn
+import torch
 
 
 class MLP(nn.Module):
@@ -18,6 +19,7 @@ class MLP(nn.Module):
         self.out_fc = nn.Linear(hidden_features, out_features, bias=False)
 
     def forward(self, x):
+        x = torch.flatten(x, 1)
         x = F.relu(self.inp_lin(x))
         for hidden in self.hidden:
             x = F.relu(hidden(x))

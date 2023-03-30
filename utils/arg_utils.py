@@ -74,18 +74,13 @@ def get_dataset_mean_std(dataset):
     return mean, std
 
 
-def get_resize_transforms(dataset, model):
-    # Non-imagenet dataset
-    if dataset != 'imagenet':
-        if model != 'alexnet':  # No resizing necessary for smaller datasets
-            return []
-    if model in ['mlp', 'lenet5']:
-        raise NotImplementedError('Can ImageNet be used for MLP or LeNet5? # TODO')
-
-    return [
-        transforms.Resize((227, 227)),
-        transforms.CenterCrop((224, 224))
-    ]
+def get_resize_transforms(model):
+    if model == 'alexnet':
+        return [
+            transforms.Resize((227, 227)),
+            transforms.CenterCrop((224, 224))
+        ]
+    return []
 
 
 def get_transforms_from_args(args):
@@ -98,14 +93,11 @@ def get_transforms_from_args(args):
     model = args.model.lower()
     mean, std = get_dataset_mean_std(dataset)
 
-    # Compose transforms
-    tfs = get_resize_transforms(dataset, model)
+    tfs = get_resize_transforms(model)
     tfs += [
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
     ]
-    if model == 'mlp':
-        tfs.append(transforms.Lambda(lambda x: torch.flatten(x)))
     return transforms.Compose(tfs)
 
 
@@ -187,14 +179,16 @@ def get_train_val_split(args, dataset):
     val_sampler = SubsetRandomSampler(list(range(val_split)))
     train_sampler = SubsetRandomSampler(list(range(val_split, len(dataset))))
     train_loader = torch.utils.data.DataLoader(dataset,
-                                               batch_size=args.batch_size_train,
+                                               batch_size=args.batch_size,
                                                sampler=train_sampler,
                                                num_workers=args.workers,
+                                               pin_memory=True
                                                )
     val_loader = torch.utils.data.DataLoader(dataset,
-                                             batch_size=args.batch_size_test,
+                                             batch_size=args.batch_size,
                                              sampler=val_sampler,
-                                             num_workers=args.workers
+                                             num_workers=args.workers,
+                                             pin_memory=True
                                              )
     return train_loader, val_loader
 

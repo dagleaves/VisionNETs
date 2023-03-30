@@ -46,6 +46,7 @@ class VGG16(nn.Module):
         )
 
         classifier_dim = 7 if in_features == 224 else 1
+        self.avgpool = nn.AdaptiveAvgPool2d((classifier_dim, classifier_dim))
         self.classifier = nn.Sequential(
             nn.Linear(in_features=512 * classifier_dim * classifier_dim, out_features=4096),
             nn.ReLU(inplace=True),
@@ -58,6 +59,7 @@ class VGG16(nn.Module):
 
     def forward(self, x):
         x = self.features(x)
+        x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.classifier(x)
         return x
