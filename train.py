@@ -93,10 +93,9 @@ def main():
         checkpoint = torch.load(args.ckpt_dir + f'/{args.model}_{args.dataset}.pt')
         model.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
-        start_epoch = checkpoint['epoch'] - 1
+        start_epoch = checkpoint['epoch']
         sched_last_epoch = start_epoch * len(train_loader) - 1
-        start_epoch -= 1
-        print('Resuming training from epoch', start_epoch)
+        print('Resuming training after epoch', start_epoch)
 
     # Initialize LR Scheduler
     scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer,
@@ -150,8 +149,8 @@ if __name__ == '__main__':
                         help='root data directory')
     parser.add_argument('--batch_size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
-    parser.add_argument('--epochs', type=int, default=2, metavar='N',
-                        help='number of training epochs (default: 2)')
+    parser.add_argument('--epochs', type=int, default=1, metavar='N',
+                        help='number of training epochs (default: 1)')
     parser.add_argument('--val_pc', default=0.1, type=float,
                         help='fraction of training data used for validation')
     parser.add_argument('--workers', type=int, default=0, metavar='N',
