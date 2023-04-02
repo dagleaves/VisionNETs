@@ -78,14 +78,7 @@ def main():
     optimizer = arg_utils.get_optimizer_from_args(args, model)
     criterion = torch.nn.CrossEntropyLoss()
     start_epoch = 0
-
-    # Resume from checkpoint if requested
-    if args.resume:
-        checkpoint = torch.load(args.ckpt_dir + f'/{args.model}_{args.dataset}.pt')
-        model.load_state_dict(checkpoint['state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer'])
-        start_epoch = checkpoint['epoch']
-        print('Resuming training from epoch', start_epoch)
+    sched_last_epoch = -1   # Start LR Scheduler from the beginning
 
     # Load data
     train_data, test_data = arg_utils.get_datasets_from_args(args)
@@ -94,11 +87,24 @@ def main():
                                               batch_size=args.batch_size,
                                               num_workers=args.workers,
                                               shuffle=False)
+
+    # Resume from checkpoint if requested
+    if args.resume:
+        checkpoint = torch.load(args.ckpt_dir + f'/{args.model}_{args.dataset}.pt')
+        model.load_state_dict(checkpoint['state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        start_epoch = checkpoint['epoch'] - 1
+        sched_last_epoch = start_epoch * len(train_loader) - 1
+        start_epoch -= 1
+        print('Resuming training from epoch', start_epoch)
+
     # Initialize LR Scheduler
     scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer,
                                                     max_lr=args.lr,
                                                     steps_per_epoch=len(train_loader),
-                                                    epochs=args.epochs)
+                                                    epochs=args.epochs,
+                                                    last_epoch=sched_last_epoch
+                                                    )
 
     # Train model
     pbar = trange(start_epoch, args.epochs, desc='Training', unit='epoch')
@@ -117,7 +123,7 @@ def main():
         })
 
     # Save final model
-    save_checkpoint(model, optimizer, criterion, args.epochs - 1, args)
+    save_checkpoint(model, optimizer, args.epochs - 1, args)
 
     # Test model on test set
     test_loss, test_acc = test(model, criterion, test_loader, device, testing=True)
