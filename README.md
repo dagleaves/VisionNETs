@@ -8,7 +8,7 @@ PyTorch implementations of popular vision neural networks
 | MLP     	| 0.9800   | 0.5404   	| 0.2908   	| 0.8857 		|               |
 | LeNet5  	| 0.9912   | 0.7366 	| 0.4089   	| 0.9109   		|               |
 | AlexNet 	| 0.9947   | 0.8322   	| 0.5505	| 0.9297   		|               |
-| ResNet  	|          |          	|          	|          		|               |
+| ResNet50 	| 0.9948   |          	|          	|          		|               |
 | VGG16  	| 0.9956   | 0.8696   	| 0.5581   	| 0.9390   		|               |
 | GoogLeNet	|          |          	|          	|          		|               |
 
@@ -17,7 +17,7 @@ PyTorch implementations of popular vision neural networks
 - [x] Multi-Layer Perceptron
 - [x] [LeNet5](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
 - [x] [AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks)
-- [ ] [ResNet](https://arxiv.org/abs/1704.06904)
+- [x] [ResNet50](https://arxiv.org/abs/1704.06904)
 - [x] [VGG16](https://arxiv.org/abs/1505.06798)
 - [ ] [GoogLeNet](https://arxiv.org/abs/1409.4842)
 
@@ -38,7 +38,7 @@ Any specific parameters used to achieve the results above:
 | MLP     	| 15 epochs	| 10 epochs | 10 epochs | 10 epochs	 	|          	|
 | LeNet5  	| 10 epochs | 10 epochs | 15 epochs | 15 epochs     |          	|
 | AlexNet 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
-| ResNet  	|        	|          	|           |              	|          	|
+| ResNet50 	| 10 epochs	|          	|           |              	|          	|
 | VGG16 	| 5 epochs	| 20 epochs	| 10 epochs | 7 epochs 		|          	|
 | GoogLeNet	|        	|          	|           |              	|          	|
 
