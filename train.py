@@ -120,7 +120,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train MNIST on a image classification model')
     # Config parameters
     parser.add_argument('--model', type=str, default='MLP', metavar='M',
-                        choices=['MLP', 'AlexNet', 'LeNet5', 'VGG16', 'ResNet', 'GoogLeNet'],
+                        choices=['MLP', 'AlexNet', 'LeNet5', 'VGG16', 'ResNet50', 'GoogLeNet'],
                         help='which model to use')
     parser.add_argument('--optim', type=str, default='SGD', metavar='O',
                         choices=['SGD', 'Adam', 'AdamW'],
