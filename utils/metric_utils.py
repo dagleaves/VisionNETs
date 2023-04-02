@@ -66,7 +66,6 @@ def save_checkpoint(model, optimizer, criterion, epoch, args, best=False):
     torch.save({
         'epoch': epoch + 1,
         'state_dict': model.state_dict(),
-        'criterion': criterion,
         'optimizer': optimizer.state_dict(),
         'args': vars(args)
     }, f'{args.ckpt_dir}/{args.model}_{args.dataset}.pt')

@@ -77,6 +77,15 @@ def main():
     model = arg_utils.get_model_from_args(args).to(device)
     optimizer = arg_utils.get_optimizer_from_args(args, model)
     criterion = torch.nn.CrossEntropyLoss()
+    start_epoch = 0
+
+    # Resume from checkpoint if requested
+    if args.resume:
+        checkpoint = torch.load(args.ckpt_dir + f'/{args.model}_{args.dataset}.pt')
+        model.load_state_dict(checkpoint['state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        start_epoch = checkpoint['epoch']
+        print('Resuming training from epoch', start_epoch)
 
     # Load data
     train_data, test_data = arg_utils.get_datasets_from_args(args)
@@ -92,7 +101,7 @@ def main():
                                                     epochs=args.epochs)
 
     # Train model
-    pbar = trange(args.epochs, desc='Training', unit='epoch')
+    pbar = trange(start_epoch, args.epochs, desc='Training', unit='epoch')
     for epoch in pbar:
         train(model, optimizer, scheduler, criterion, train_loader, device, epoch)
         val_loss, val_acc = test(model, criterion, val_loader, device)
@@ -155,6 +164,8 @@ if __name__ == '__main__':
                         help='use wandb (default: false)')
     parser.add_argument('--sweep', action='store_true',
                         help='use WandB hyperparameter sweep (default: false)')
+    parser.add_argument('--resume', action='store_true',
+                        help='resume training from saved checkpoint (default: false')
 
     # Load args
     args = parser.parse_args()
