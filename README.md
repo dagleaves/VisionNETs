@@ -10,7 +10,7 @@ PyTorch implementations of popular vision neural networks
 | AlexNet 	| 0.9947   | 0.8322   	| 0.5505	| 0.9297   		|               |
 | ResNet50 	| 0.9948   | 0.6046   	| 0.4391   	|  0.9167 		|               |
 | VGG16  	| 0.9956   | 0.8696   	| 0.5581   	| 0.9390   		|               |
-| GoogLeNet	| 0.9947   |          	|          	|          		|               |
+| GoogLeNet	| 0.9947   | 0.7995   	|          	|          		|               |
 
 ## Models
 
@@ -40,7 +40,7 @@ Any specific parameters used to achieve the results above:
 | AlexNet 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
 | ResNet50 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
 | VGG16 	| 5 epochs	| 20 epochs	| 10 epochs | 7 epochs 		|          	|
-| GoogLeNet	| 4 epochs 	|          	|           |              	|          	|
+| GoogLeNet	| 4 epochs 	| 20 epochs	|           |              	|          	|
 
 ## Pre-Trained Weights
 
