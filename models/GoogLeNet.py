@@ -13,7 +13,7 @@ def convblock(in_channels: int, out_channels: int, kernel_size: int, stride: int
 
 class Inception(nn.Module):
     """
-    Fundamentel GoogLeNet Inception layer
+    Fundamental GoogLeNet Inception layer
     Padding is used to ensure image dimensions do not change within inception block
     """
     def __init__(self,
