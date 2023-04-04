@@ -1,5 +1,9 @@
 import torch.nn as nn
 import torch
+from collections import namedtuple
+
+# Used for checking if model output has to use special loss calculation for the aux logits
+GoogLeNetOutput = namedtuple('GoogLeNetOutput', ['logits', 'aux_logits1', 'aux_logits2'])
 
 
 def convblock(in_channels: int, out_channels: int, kernel_size: int, stride: int = 1, padding: int = 0):
@@ -130,7 +134,7 @@ class GoogLeNet(nn.Module):
 
         out = torch.flatten(out, 1)
         out = self.classifier(out)
-        return out, aux1, aux2
+        return GoogLeNetOutput(out, aux1, aux2)
 
     @classmethod
     def from_args(cls, args):
