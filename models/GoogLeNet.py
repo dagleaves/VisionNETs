@@ -47,9 +47,12 @@ class Inception(nn.Module):
             convblock(in_channels, ch_3x3red, kernel_size=1),
             convblock(ch_3x3red, ch_3x3, kernel_size=3, padding=1)
         )
+        # NOTE: Although the paper says to use a kernel size 5 in Lane 3,
+        # many implementations use kernel size 3, as the released implementation uses this.
+        # I am not sure if there is a difference in performance, but it is a known issue.
         self.lane3 = nn.Sequential(
             convblock(in_channels, ch_5x5red, kernel_size=1),
-            convblock(ch_5x5red, ch_5x5, kernel_size=5, padding=1)
+            convblock(ch_5x5red, ch_5x5, kernel_size=5, padding=2)
         )
         self.lane4 = nn.Sequential(
             nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
@@ -61,7 +64,7 @@ class Inception(nn.Module):
         lane2 = self.lane2(x)
         lane3 = self.lane3(x)
         lane4 = self.lane4(x)
-        return torch.cat((lane1, lane2, lane3, lane4), 1)
+        return torch.cat([lane1, lane2, lane3, lane4], 1)
 
 
 class AuxClassifier(nn.Module):
