@@ -156,7 +156,10 @@ class GoogLeNet(nn.Module):
 
         out = torch.flatten(out, 1)
         out = self.classifier(out)
-        return GoogLeNetOutput(out, aux1, aux2)
+
+        if self.training:
+            return GoogLeNetOutput(out, aux1, aux2)
+        return out
 
     @classmethod
     def from_args(cls, args):
