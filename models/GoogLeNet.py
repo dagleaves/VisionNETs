@@ -2,8 +2,20 @@ import torch.nn as nn
 import torch
 from collections import namedtuple
 
+
 # Used for checking if model output has to use special loss calculation for the aux logits
 GoogLeNetOutput = namedtuple('GoogLeNetOutput', ['logits', 'aux_logits1', 'aux_logits2'])
+
+
+# Special GoogLeNet auxiliary loss calculation procedure
+def gnet_loss(output, target, criterion):
+    assert isinstance(output, GoogLeNetOutput), 'Input must be a GoogLeNet named tuple'
+    main_loss = criterion(output.logits, target)
+    if output.aux_logits1 is None or output.aux_logits2 is None:
+        return main_loss
+    aux1_loss = criterion(output.aux_logits1, target)
+    aux2_loss = criterion(output.aux_logits2, target)
+    return main_loss + (0.3 * aux1_loss) + (0.3 * aux2_loss)    # 0.3 discount weight from paper
 
 
 def convblock(in_channels: int, out_channels: int, kernel_size: int, stride: int = 1, padding: int = 0):
