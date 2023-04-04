@@ -2,7 +2,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision import datasets, transforms
 from torch.optim import SGD, Adam, AdamW
 from pathlib import Path
-from models import MLP, LeNet5, AlexNet, VGG16, ResNet50
+from models import MLP, LeNet5, AlexNet, VGG16, ResNet50, GoogLeNet
 import numpy as np
 import random
 import torch
@@ -28,6 +28,8 @@ def get_model_from_args(args):
         return VGG16.from_args(args)
     elif model_arg == 'resnet50':
         return ResNet50.from_args(args)
+    elif model_arg == 'googlenet':
+        return GoogLeNet.from_args(args)
     else:
         raise NotImplementedError(f'Model {args.model} is not implemented')
 

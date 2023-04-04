@@ -2,6 +2,7 @@ import utils
 import utils as arg_utils
 from utils import AverageMeter, calc_metrics, update_metrics, save_checkpoint
 from tqdm import tqdm, trange
+from models import GoogLeNetOutput, gnet_loss
 import argparse
 import torch
 import wandb
@@ -21,7 +22,11 @@ def train(model, optimizer, scheduler, criterion, train_loader, device, epoch):
         # Update model parameters
         output = model(data)
 
-        loss = criterion(output, target)
+        if isinstance(output, GoogLeNetOutput):
+            loss = gnet_loss(output, target, criterion)
+            output = output.logits
+        else:
+            loss = criterion(output, target)
         loss.backward()
         optimizer.step()
 
