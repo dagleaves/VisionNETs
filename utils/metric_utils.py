@@ -52,15 +52,13 @@ def update_metrics(new_metrics: dict,
     return postfix
 
 
-def save_checkpoint(model, optimizer, criterion, epoch, args, best=False):
+def save_checkpoint(model, optimizer, epoch, args):
     """
     Save a PyTorch model checkpoint
     :param model: model to save
     :param optimizer: model's current optimizer
-    :param criterion: criterion used
-    :param epoch: current epoch in training
+    :param epoch: last epoch trained
     :param args: command line arguments for model
-    :param best: if model has best val loss (default False)
     :return: None
     """
     torch.save({
