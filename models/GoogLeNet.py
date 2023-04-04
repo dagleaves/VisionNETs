@@ -114,7 +114,7 @@ class GoogLeNet(nn.Module):
         self.inception4e = Inception(528, 256, 160, 320, 32, 128, 128)
         self.maxpool4 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.inception5a = Inception(832, 256, 160, 320, 32, 128, 128)
-        self.inception5b = Inception(1024, 384, 192, 384, 48, 128, 128)
+        self.inception5b = Inception(832, 384, 192, 384, 48, 128, 128)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.dropout = nn.Dropout(p=0.4)
         self.classifier = nn.Linear(in_features=1024, out_features=out_features)
