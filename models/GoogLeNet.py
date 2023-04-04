@@ -45,7 +45,7 @@ class Inception(nn.Module):
         lane2 = self.lane2(x)
         lane3 = self.lane3(x)
         lane4 = self.lane4(x)
-        return torch.cat([lane1, lane2, lane3, lane4])
+        return torch.cat((lane1, lane2, lane3, lane4), 1)
 
 
 class AuxClassifier(nn.Module):
