@@ -24,6 +24,7 @@ def train(model, optimizer, scheduler, criterion, train_loader, device, epoch):
 
         if isinstance(output, GoogLeNetOutput):
             loss = gnet_loss(output, target, criterion)
+            output = output.logits
         else:
             loss = criterion(output, target)
         loss.backward()
