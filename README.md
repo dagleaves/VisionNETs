@@ -10,7 +10,7 @@ PyTorch implementations of popular vision neural networks
 | AlexNet 	| 0.9947   | 0.8322   	| 0.5505	| 0.9297   		|               |
 | ResNet50 	| 0.9948   | 0.6046   	| 0.4391   	| 0.9167 		|               |
 | VGG16  	| 0.9956   | 0.8696   	| 0.5581   	| 0.9390   		|               |
-| GoogLeNet	| 0.9947   | 0.7995   	| 0.4785   	| 		   		|               |
+| GoogLeNet	| 0.9947   | 0.7995   	| 0.4785   	| 0.9236   		|               |
 
 ## Models
 
@@ -40,9 +40,10 @@ Any specific parameters used to achieve the results above:
 | AlexNet 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
 | ResNet50 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
 | VGG16 	| 5 epochs	| 20 epochs	| 10 epochs | 7 epochs 		|          	|
-| GoogLeNet	| 4 epochs 	| 20 epochs	| 10 epochs |  			   	|          	|
+| GoogLeNet	| 4 epochs 	| 20 epochs	| 10 epochs | 10 epochs   	|          	|
 
 ## Pre-Trained Weights
 
 Due to the size of the larger model weights, I had to move the pre-trained model checkpoints to a Google Drive folder.
-You may access the pre-trained weights at the following link: [Google Drive](https://drive.google.com/drive/folders/12HhPDR_I2pdhZ5VBbv56mn2bZWVrdK1t?usp=share_link)
+You may access the pre-trained weights at the following link: 
+[Google Drive](https://drive.google.com/drive/folders/12HhPDR_I2pdhZ5VBbv56mn2bZWVrdK1t?usp=share_link)
