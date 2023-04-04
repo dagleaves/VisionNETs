@@ -82,6 +82,13 @@ class AuxClassifier(nn.Module):
             nn.Linear(1024, out_features)
         )
 
+    def forward(self, x):
+        out = self.avgpool(x)
+        out = self.conv(out)
+        out = torch.flatten(out, 1)
+        out = self.classifier(out)
+        return out
+
 
 class GoogLeNet(nn.Module):
     """
