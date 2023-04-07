@@ -113,7 +113,7 @@ def main():
                              max_epochs=args.epochs,
                              accelerator='gpu',
                              devices=args.devices,
-                             # num_nodes=args.nodes,
+                             num_nodes=args.nodes,
                              strategy=ddp
                              )
     else:
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     # Distributed training parameters
     parser.add_argument('--devices', type=int, default=1, metavar='N',
                         help='number of gpus per node (default: 1)')
-    parser.add_argument('--nodes', type=int, default=0, metavar='N',
+    parser.add_argument('--nodes', type=int, default=1, metavar='N',
                         help='number of nodes for training (default: 1)')
     # Miscellaneous
     parser.add_argument('--seed', type=int, default=2, metavar='S',
