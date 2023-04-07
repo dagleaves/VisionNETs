@@ -3,8 +3,10 @@ from utils import calc_metrics
 from models import GoogLeNetOutput, gnet_loss
 import lightning.pytorch as pl
 from lightning.pytorch.cli import LightningCLI
+from lightning.pytorch.strategies import DDPStrategy
 import argparse
 import torch
+import os
 
 
 class LitModel(pl.LightningModule):
@@ -25,8 +27,8 @@ class LitModel(pl.LightningModule):
             loss = self.criterion(output, target)
 
         metrics = calc_metrics(args, output.cpu(), target.cpu())
-        self.log("train_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("train_acc", metrics['top1'], on_epoch=True, prog_bar=True, logger=True)
+        self.log("train_loss", loss, on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
+        self.log("train_acc", metrics['top1'], on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -40,8 +42,8 @@ class LitModel(pl.LightningModule):
             loss = self.criterion(output, target)
 
         metrics = calc_metrics(args, output.cpu(), target.cpu())
-        self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("val_acc", metrics['top1'], on_epoch=True, prog_bar=True, logger=True)
+        self.log("val_loss", loss, on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
+        self.log("val_acc", metrics['top1'], on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
         return loss
 
     def test_step(self, batch, batch_idx):
@@ -55,8 +57,8 @@ class LitModel(pl.LightningModule):
             loss = self.criterion(output, target)
 
         metrics = calc_metrics(args, output.cpu(), target.cpu())
-        self.log("test_loss", loss, on_epoch=True, prog_bar=True, logger=True)
-        self.log("test_acc", metrics['top1'], on_epoch=True, prog_bar=True, logger=True)
+        self.log("test_loss", loss, on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
+        self.log("test_acc", metrics['top1'], on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
         return loss
 
     def configure_optimizers(self):
@@ -91,7 +93,7 @@ class LitDataModule(pl.LightningDataModule):
 def main():
     global args
 
-    pl.seed_everything(123, workers=True)
+    pl.seed_everything(args.seed, workers=True)
 
     # Load data
     data = LitDataModule(args)
@@ -103,7 +105,20 @@ def main():
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(monitor='val_loss', mode='min', patience=3)
 
     # Initialize trainer
-    trainer = pl.Trainer(default_root_dir=args.ckpt_dir, callbacks=early_stop_callback)
+    if torch.cuda.is_available():
+        ddp_backend = 'gloo' if os.name == 'nt' else 'nccl'     # windows does not support nccl
+        ddp = DDPStrategy(process_group_backend=ddp_backend)
+        trainer = pl.Trainer(default_root_dir=args.ckpt_dir,
+                             callbacks=early_stop_callback,
+                             max_epochs=args.epochs,
+                             accelerator='gpu',
+                             devices=args.devices,
+                             # num_nodes=args.nodes,
+                             strategy=ddp
+                             )
+    else:
+        trainer = pl.Trainer(default_root_dir=args.ckpt_dir, callbacks=early_stop_callback, max_epochs=args.epochs)
+
     trainer.fit(model, data)
     trainer.test(model, data)
 
@@ -113,7 +128,7 @@ def cli_main():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Train MNIST on a image classification model')
+    parser = argparse.ArgumentParser(description='Train common image classification models')
     # Config parameters
     parser.add_argument('--model', type=str, default='MLP', metavar='M',
                         choices=['MLP', 'AlexNet', 'LeNet5', 'VGG16', 'ResNet50', 'GoogLeNet'],
@@ -144,6 +159,11 @@ if __name__ == '__main__':
                         help='momentum (default: 0.9)')
     parser.add_argument('--decay', type=float, default=0.0, metavar='N',
                         help='weight decay (default: 0.0)')
+    # Distributed training parameters
+    parser.add_argument('--devices', type=int, default=1, metavar='N',
+                        help='number of gpus per node (default: 1)')
+    parser.add_argument('--nodes', type=int, default=0, metavar='N',
+                        help='number of nodes for training (default: 1)')
     # Miscellaneous
     parser.add_argument('--seed', type=int, default=2, metavar='S',
                         help='random seed (default: 2)')
