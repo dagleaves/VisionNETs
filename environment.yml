@@ -13,3 +13,4 @@ dependencies:
   - pip:
     - scikit-learn==1.2.2
     - tqdm==4.65.0
+    - wandb
