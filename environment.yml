@@ -5,8 +5,8 @@ channels:
   - defaults
 dependencies:
   - python=3.8.16
-  - pytorch=2.0.0=py3.8_cuda11.8_cudnn8_0
-  - pytorch-cuda=11.8=h24eeafa_3
+  - pytorch=2.0.0
+  - pytorch-cuda=11.8
   - torchaudio
   - torchvision
   - pip=23.0.1
