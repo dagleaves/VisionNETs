@@ -3,44 +3,62 @@ PyTorch implementations of popular vision neural networks
 
 ## Results
 
-| Model   	| MNIST    | CIFAR-10 	| CIFAR-100	| FashionMNIST  | ImageNet  	|
-|---------- |----------|----------	|----------	|--------------	|-------------- |
-| MLP     	| 0.9800   | 0.5404   	| 0.2908   	| 0.8857 		|               |
-| LeNet5  	| 0.9912   | 0.7366 	| 0.4089   	| 0.9109   		|               |
-| AlexNet 	| 0.9947   | 0.8322   	| 0.5505	| 0.9297   		|               |
-| ResNet50 	| 0.9948   | 0.6046   	| 0.4391   	| 0.9167 		|               |
-| VGG16  	| 0.9956   | 0.8696   	| 0.5581   	| 0.9390   		|               |
-| GoogLeNet	| 0.9947   | 0.7995   	| 0.4785   	| 0.9236   		|               |
+| Model   	| MNIST    | FashionMNIST  | CIFAR-10 	| CIFAR-100	| ImageNet  	|
+|--------- |----------|---------------|----------	|----------	|-------------- |
+| MLP     	| 0.9800   | 0.8857 		| 0.5404   	    | 0.2908   	|               |
+| LeNet5  	| 0.9912   | 0.9109   		| 0.7366 	      | 0.4089   	|               |
+| AlexNet 	| 0.9947   | 0.9297   		| 0.8322   	    | 0.5505	|               |
+| ResNet50 	| 0.9948   | 0.9167 		| 0.6046   	    | 0.4391   	|               |
+| VGG16  	| 0.9956   | 0.9390   		| 0.8696   	    | 0.5581   	|               |
+| GoogLeNet	| 0.9947   | 0.9236   		| 0.7995   	    | 0.4785   	|               |
 
-## Models
-
-- [x] Multi-Layer Perceptron
-- [x] [LeNet5](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
-- [x] [AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks)
-- [x] [ResNet50](https://arxiv.org/abs/1704.06904)
-- [x] [VGG16](https://arxiv.org/abs/1505.06798)
-- [x] [GoogLeNet](https://arxiv.org/abs/1409.4842)
-
-## Datasets
-
-- [x] MNIST
-- [x] CIFAR-10
-- [x] CIFAR-100
-- [x] FashionMNIST
-- [x] ImageNet
 
 ## Replication Details
 
-Any specific parameters used to achieve the results above:
+### Environment
 
-| Model   	| MNIST    	| CIFAR-10 	| CIFAR-100	| FashionMNIST 	| ImageNet 	|
-|---------	|--------  	|----------	|----------	|--------------	|----------	|
-| MLP     	| 15 epochs	| 10 epochs | 10 epochs | 10 epochs	 	|          	|
-| LeNet5  	| 10 epochs | 10 epochs | 15 epochs | 15 epochs     |          	|
-| AlexNet 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
-| ResNet50 	| 10 epochs	| 10 epochs | 15 epochs | 15 epochs    	|          	|
-| VGG16 	| 5 epochs	| 20 epochs	| 10 epochs | 7 epochs 		|          	|
-| GoogLeNet	| 4 epochs 	| 20 epochs	| 10 epochs | 10 epochs   	|          	|
+First, you must obtain the necessary dependencies, which are provided as a conda environment
+from the environment.yml file. With Anaconda or Miniconda installed, this can be imported
+using the following command:
+
+```shell
+conda env create -f environment.yml
+```
+
+Then, activate the environment and the program will be ready to run.
+
+```shell
+conda activate visionnets
+```
+
+### Running the program
+
+The full list of command-line arguments can be found with `python train.py --help`.
+To replicate the exact results above, scripts can be found in the `scripts/` directory
+for each model.
+
+To train a new model, the base command is as follows:
+
+```shell
+python train.py --model MLP --dataset MNIST --epochs 10
+```
+
+This will automatically download the MNIST dataset if it is not already found in the 
+`--data_dir` (default `data/`) and train the MLP model for 10 epochs and save the 
+final model checkpoint to `--ckpt_dir` (default `checkpoints/`).
+
+### Non-default parameters used
+
+Any specific parameters that were used to achieve the results above:
+
+| Model   	| MNIST    	| FashionMNIST 	| CIFAR-10 	| CIFAR-100	| ImageNet 	|
+|---------	|--------  	|--------------	|----------	|----------	|----------	|
+| MLP     	| 15 epochs	| 10 epochs	 	| 10 epochs | 10 epochs |          	|
+| LeNet5  	| 10 epochs | 15 epochs     | 10 epochs | 15 epochs |          	|
+| AlexNet 	| 10 epochs	| 15 epochs    	| 10 epochs | 15 epochs |          	|
+| ResNet50 | 10 epochs	| 15 epochs    	| 10 epochs | 15 epochs |          	|
+| VGG16 	| 5 epochs	| 7 epochs 		| 20 epochs	| 10 epochs |          	|
+| GoogLeNet| 4 epochs 	| 10 epochs   	| 20 epochs	| 10 epochs |          	|
 
 ## Pre-Trained Weights
 
